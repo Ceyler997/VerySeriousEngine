@@ -5,30 +5,47 @@ using SharpDX.DXGI;
 using SharpDX.Windows;
 using System;
 using System.Collections.Generic;
+using VerySeriousEngine.Utils;
+
 using Device = SharpDX.Direct3D11.Device;
+using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace VerySeriousEngine.Core
 {
+    //
+    // Summary:
+    //     Game class, contains all logic to start a game
     public class Game : IDisposable
     {
-        public List<GameObject> GameObjects { get; }
-        public Compiler Compiler { get; }
+        public static Game GameInstance { get; private set; }
+
+        public World CurrentWorld { get; set; }
+        public List<World> GameWorlds { get; }
+
+        public Constructor GameConstructor { get; }
+        public Renderer GameRenderer { get; }
         public float FrameTime { get; private set; }
+
+        private readonly string gameName;
 
         private readonly RenderForm form;
         private readonly Device device;
         private readonly SwapChain swapChain;
         private readonly Texture2D backBuffer;
         private readonly RenderTargetView renderView;
+        private readonly Buffer worldTransformMatrixBuffer;
 
-        public Game(string name, int windowWidth, int windowHeight, bool isWindowed)
+        private Game(string name, int windowWidth, int windowHeight, bool isWindowed)
         {
-            GameObjects = new List<GameObject>();
+            Logger.Log("Game construction");
 
-            form = new RenderForm("")
+            gameName = name ?? throw new ArgumentNullException(nameof(gameName));
+
+            form = new RenderForm(name)
             {
                 ClientSize = new System.Drawing.Size(windowWidth, windowHeight),
             };
+
             var swapChainDesc = new SwapChainDescription()
             {
                 BufferCount = 1,
@@ -40,30 +57,74 @@ namespace VerySeriousEngine.Core
                 Usage = Usage.RenderTargetOutput,
             };
             Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.Debug, swapChainDesc, out device, out swapChain);
+
             backBuffer = swapChain.GetBackBuffer<Texture2D>(0);
             renderView = new RenderTargetView(device, backBuffer);
 
-            Compiler = new Compiler(device);
+            GameConstructor = new Constructor(device);
+            worldTransformMatrixBuffer = GameConstructor.CreateEmptyBuffer(Matrix.SizeInBytes, BindFlags.ConstantBuffer);
+            GameRenderer = new Renderer(device, renderView, swapChain, worldTransformMatrixBuffer);
 
-            SetupRender(windowWidth, windowHeight);
             SetupInput();
+            SetupPhysics();
+            SetupRender(windowWidth, windowHeight);
+
+            GameWorlds = new List<World>();
         }
 
-        public void StartGame()
+        public override string ToString()
         {
-            RenderLoop.Run(form, GameLoop);
+            return gameName;
+        }
+
+        public static Game CreateGame(string name, int windowWidth, int windowHeight, bool isWindowed)
+        {
+            Logger.Log("Creating game " + name);
+            if (GameInstance != null)
+            {
+                Logger.LogWarning("Other game already exists");
+                return null;
+            }
+
+            GameInstance = new Game(name, windowWidth, windowHeight, isWindowed);
+            return GameInstance;
         }
 
         public void Dispose()
         {
-            foreach (var gameObject in GameObjects)
-                gameObject.Dispose();
+            Logger.Log("Disposing game " + gameName);
 
+            foreach (var world in GameWorlds)
+                world.Dispose();
+
+            worldTransformMatrixBuffer.Dispose();
             renderView.Dispose();
             backBuffer.Dispose();
             swapChain.Dispose();
             device.Dispose();
             form.Dispose();
+
+            GameInstance = null;
+        }
+
+        public void StartGame()
+        {
+            Logger.Log("Starting game " + gameName);
+
+            if (CurrentWorld == null && GameWorlds.Count > 0)
+                CurrentWorld = GameWorlds[0];
+
+            RenderLoop.Run(form, GameLoop);
+        }
+
+        private void SetupInput()
+        {
+            Logger.LogWarning("Input setup not inpmlemented");
+        }
+
+        private void SetupPhysics()
+        {
+            Logger.LogWarning("Physics setup not inpmlemented");
         }
 
         private void SetupRender(int windowWidth, int windowHeight)
@@ -82,57 +143,20 @@ namespace VerySeriousEngine.Core
             context.OutputMerger.SetTargets(renderView);
         }
 
-        private void SetupInput()
-        {
-
-        }
-
         private void GameLoop()
         {
-            device.ImmediateContext.ClearRenderTargetView(renderView, Color.Black);
-
             UpdateFrameTime();
-            CollectInput(FrameTime);
-            UpdateObjects(FrameTime);
-            RenderObjects(FrameTime);
-            
-            swapChain.Present(1, PresentFlags.None);
-        }
 
-        private void CollectInput(float frameTime)
-        {
-            // Collect and handle input keys
-        }
-
-        private void RenderObjects(float frameTime)
-        {
-            var context = device.ImmediateContext;
-            foreach(var gameObject in GameObjects)
-            {
-                var renderComponent = gameObject.RenderComponent;
-                if (renderComponent == null)
-                    continue;
-
-                context.InputAssembler.InputLayout = renderComponent.InputLayout;
-                context.InputAssembler.SetIndexBuffer(renderComponent.IndexBuffer, Format.R32_UInt, 0);
-                context.InputAssembler.SetVertexBuffers(0, renderComponent.VertexBufferBinding);
-                context.VertexShader.Set(renderComponent.VertexShader);
-                context.PixelShader.Set(renderComponent.PixelShader);
-                context.DrawIndexed(renderComponent.IndexCount, 0, 0);
-            }
-        }
-
-        private void UpdateObjects(float frameTime)
-        {
-            foreach (var gameObject in GameObjects)
-            {
-                // update
-            }
+            if (CurrentWorld != null)
+                CurrentWorld.Update(FrameTime);
+            else
+                Logger.LogWarning("No Game World");
         }
 
         private void UpdateFrameTime()
         {
-
+            Logger.LogWarning("Frame time not implemented");
         }
+
     }
 }
