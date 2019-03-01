@@ -89,7 +89,6 @@ namespace VerySeriousEngine.Core
 
         private void UpdatePhysics(float frameTime)
         {
-            Logger.LogWarning("Physics update not implemented");
         }
     }
 }

@@ -98,7 +98,7 @@ namespace VerySeriousEngine.Core
 
         private void SetupPhysics()
         {
-            Logger.LogWarning("Physics setup not inpmlemented");
+            Logger.LogWarning("Physics not inpmlemented yet");
         }
 
         private void GameLoop()

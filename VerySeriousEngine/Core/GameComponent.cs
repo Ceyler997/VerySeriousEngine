@@ -71,24 +71,12 @@ namespace VerySeriousEngine.Core
             Logger.Log(ToString() + " component start");
         }
 
-        virtual public void Update(float frameTime)
-        {
-            Logger.Log(ToString() + " component update");
-        }
+        virtual public void Update(float frameTime) { }
 
-        virtual public void OnActivation()
-        {
-            Logger.Log(ToString() + " component activation");
-        }
+        virtual public void OnActivation() { }
 
-        virtual public void OnDeactivation()
-        {
-            Logger.Log(ToString() + " component deactivation");
-        }
+        virtual public void OnDeactivation() { }
 
-        virtual public void OnDestroy()
-        {
-            Logger.Log(ToString() + " component on destroy");
-        }
+        virtual public void OnDestroy() { }
     }
 }

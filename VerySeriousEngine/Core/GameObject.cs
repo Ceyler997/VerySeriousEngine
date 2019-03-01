@@ -122,24 +122,12 @@ namespace VerySeriousEngine.Core
             Logger.Log(ToString() + " object start");
         }
 
-        virtual public void Update(float frameTime)
-        {
-            Logger.Log(ToString() + " object update");
-        }
+        virtual public void Update(float frameTime) { }
 
-        virtual public void OnActivation()
-        {
-            Logger.Log(ToString() + " object activation");
-        }
+        virtual public void OnActivation() { }
 
-        virtual public void OnDeactivation()
-        {
-            Logger.Log(ToString() + " object deactivation");
-        }
+        virtual public void OnDeactivation() { }
 
-        virtual public void OnDestroy()
-        {
-            Logger.Log(ToString() + " object on destroy");
-        }
+        virtual public void OnDestroy() { }
     }
 }
