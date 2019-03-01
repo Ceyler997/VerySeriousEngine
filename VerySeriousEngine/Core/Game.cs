@@ -24,7 +24,7 @@ namespace VerySeriousEngine.Core
 
         public Constructor GameConstructor { get; }
         public Renderer GameRenderer { get; }
-        public float FrameTime { get; private set; }
+        public TimeManager TimeManager { get; }
 
         private readonly string gameName;
         private readonly RenderForm form;
@@ -42,9 +42,10 @@ namespace VerySeriousEngine.Core
 
             GameRenderer = new Renderer(form, isWindowed);
             GameConstructor = new Constructor(GameRenderer.Device);
+            TimeManager = new TimeManager();
             GameWorlds = new List<World>();
 
-            SetupTime();
+            TimeManager.Setup();
             SetupInput();
             SetupPhysics();
             GameRenderer.Setup(GameConstructor);
@@ -93,12 +94,7 @@ namespace VerySeriousEngine.Core
             
             RenderLoop.Run(form, GameLoop);
         }
-
-        private void SetupTime()
-        {
-            Logger.LogWarning("Time setup not inpmlemented");
-        }
-
+        
         private void SetupInput()
         {
             Logger.LogWarning("Input setup not inpmlemented");
@@ -111,18 +107,12 @@ namespace VerySeriousEngine.Core
 
         private void GameLoop()
         {
-            UpdateFrameTime();
+            TimeManager.UpdateFrameTime();
 
             if (CurrentWorld != null)
-                CurrentWorld.Update(FrameTime);
+                CurrentWorld.Update(TimeManager.FrameTime);
             else
                 Logger.LogWarning("No Game World");
         }
-
-        private void UpdateFrameTime()
-        {
-            Logger.LogWarning("Frame time not implemented");
-        }
-
     }
 }

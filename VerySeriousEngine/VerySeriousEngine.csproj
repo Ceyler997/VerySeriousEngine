@@ -72,6 +72,7 @@
     <Compile Include="Core\GameComponent.cs" />
     <Compile Include="Core\GameObject.cs" />
     <Compile Include="Core\PointOfView.cs" />
+    <Compile Include="Core\TimeManager.cs" />
     <Compile Include="Core\World.cs" />
     <Compile Include="Interfaces\IRenderable.cs" />
     <Compile Include="Objects\WorldObject.cs" />
