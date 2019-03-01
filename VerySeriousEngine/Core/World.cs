@@ -33,7 +33,7 @@ namespace VerySeriousEngine.Core
 
             if (instance.GameWorlds.Find(world => world.WorldName == worldName) != null)
                 throw new ArgumentException("World with this name already exists");
-            
+
             instance.GameWorlds.Add(this);
         }
 
@@ -52,7 +52,7 @@ namespace VerySeriousEngine.Core
         {
             return WorldName.GetHashCode();
         }
-        
+
         public void Dispose()
         {
             while (GameObjects.Count > 0)
@@ -61,7 +61,6 @@ namespace VerySeriousEngine.Core
 
         public void Update(float frameTime)
         {
-            UpdateInput(frameTime);
             UpdatePhysics(frameTime);
             UpdateLogic(frameTime);
             RenderObjects(frameTime);
@@ -74,7 +73,7 @@ namespace VerySeriousEngine.Core
             var ViewProjectionMatrix = WorldPointOfView.ViewMatrix * WorldPointOfView.ProjectionMatrix;
             foreach (var renderable in Renderable)
             {
-                if(!renderable.IsRendered)
+                if (!renderable.IsRendered)
                     continue;
                 Matrix WVP = renderable.WorldMatrix * ViewProjectionMatrix;
                 renderer.RenderObject(renderable, WVP);
@@ -91,11 +90,6 @@ namespace VerySeriousEngine.Core
         private void UpdatePhysics(float frameTime)
         {
             Logger.LogWarning("Physics update not implemented");
-        }
-
-        private void UpdateInput(float frameTime)
-        {
-            Logger.LogWarning("Input update not implemented");
         }
     }
 }
