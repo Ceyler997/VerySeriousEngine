@@ -11,44 +11,31 @@ namespace VerySeriousEngine.Components
     public class TransformComponent : GameComponent
     {
         private WorldObject ownerParent;
-        private Matrix localTransform;
+
+        private Vector3 localScale;
+        private Quaternion localRotation;
+        private Vector3 localTranslation;
 
         public Vector3 LocalTranslation {
-            get => localTransform.TranslationVector;
-            set => localTransform.TranslationVector = value;
+            get => localTranslation;
+            set => localTranslation = value;
         }
         public Quaternion LocalRotation {
-            get {
-                localTransform.Decompose(out _, out var rotation, out _);
-                return rotation;
-            }
-            set {
-                var translationMatrix = new Matrix
-                { TranslationVector = localTransform.TranslationVector };
-                var rotationMatrix = Matrix.RotationQuaternion(value);
-                var scaleMatrix = new Matrix
-                { ScaleVector = localTransform.ScaleVector };
-
-                localTransform = scaleMatrix * rotationMatrix * translationMatrix;
-            }
+            get => localRotation;
+            set => localRotation = value;
         }
         public Vector3 LocalScale {
-            get => localTransform.ScaleVector;
-            set => localTransform.ScaleVector = value;
+            get => localScale;
+            set => localScale = value;
         }
 
         public Vector3 WorldTranslation {
             get => WorldTransform.TranslationVector;
             set {
-                WorldTransform.Decompose(out var scale, out var rotation, out _);
-
-                Matrix scaleMatrix = new Matrix
-                { ScaleVector = scale };
-                Matrix rotationMatrix = Matrix.RotationQuaternion(rotation);
-                Matrix translationMatrix = new Matrix
-                { TranslationVector = value };
-
-                WorldTransform = scaleMatrix * rotationMatrix * translationMatrix;
+                Matrix inversedParentTransform = Matrix.Invert(GetParentWorldTransform());
+                Matrix worldTranslationMatrix = Matrix.Translation(value);
+                Matrix localTranslationMatrix = worldTranslationMatrix * inversedParentTransform;
+                LocalTranslation = localTranslationMatrix.TranslationVector;
             }
         }
         public Quaternion WorldRotation {
@@ -57,39 +44,35 @@ namespace VerySeriousEngine.Components
                 return rotation;
             }
             set {
-                WorldTransform.Decompose(out var scale, out _, out var translation);
-
-                Matrix scaleMatrix = new Matrix
-                { ScaleVector = scale };
-                Matrix rotationMatrix = Matrix.RotationQuaternion(value);
-                Matrix translationMatrix = new Matrix
-                { TranslationVector = translation };
-
-                WorldTransform = scaleMatrix * rotationMatrix * translationMatrix;
+                Matrix inversedParentTransform = Matrix.Invert(GetParentWorldTransform());
+                Matrix worldRotationMatrix = Matrix.RotationQuaternion(value);
+                Matrix localRotationMatrix = worldRotationMatrix * inversedParentTransform;
+                localRotationMatrix.Decompose(out _, out localRotation, out _);
             }
         }
         public Vector3 WorldScale {
             get => WorldTransform.ScaleVector;
             set {
-                WorldTransform.Decompose(out _, out var rotation, out var translation);
-
-                Matrix scaleMatrix = new Matrix
-                { ScaleVector = value };
-                Matrix rotationMatrix = Matrix.RotationQuaternion(rotation);
-                Matrix translationMatrix = new Matrix
-                { TranslationVector = translation };
-
-                WorldTransform = scaleMatrix * rotationMatrix * translationMatrix;
+                Matrix inversedParentTransform = Matrix.Invert(GetParentWorldTransform());
+                Matrix worldScaleMatrix = Matrix.Scaling(value);
+                Matrix localScaleMatrix = worldScaleMatrix * inversedParentTransform;
+                LocalScale = localScaleMatrix.ScaleVector;
             }
         }
 
-        public Matrix LocalTransform { get => localTransform; set => localTransform = value; }
-        public Matrix WorldTransform {
-            get => localTransform * GetParentWorldTransform();
-            set {
-                var inverseParentTransform = Matrix.Invert(GetParentWorldTransform());
-                localTransform = value * inverseParentTransform;
+        public Matrix LocalTransform {
+            get {
+                Matrix scaleMatrix = Matrix.Scaling(LocalScale);
+                Matrix rotationMatrix = Matrix.RotationQuaternion(LocalRotation);
+                Matrix translationMatrix = Matrix.Translation(LocalTranslation);
+
+                return scaleMatrix * rotationMatrix * translationMatrix;
             }
+            set => value.Decompose(out localScale, out localRotation, out localTranslation);
+        }
+        public Matrix WorldTransform {
+            get => LocalTransform * GetParentWorldTransform();
+            set => LocalTransform = value * Matrix.Invert(GetParentWorldTransform());
         }
 
         public string PrettyLocalTransformString {
@@ -111,7 +94,7 @@ namespace VerySeriousEngine.Components
 
         public TransformComponent(GameObject owner, string componentName = null, bool isActiveAtStart = false) : base(owner, componentName, isActiveAtStart)
         {
-            localTransform = Matrix.Identity;
+            LocalTransform = Matrix.Identity;
 
             if (owner.Parent != null)
             {
