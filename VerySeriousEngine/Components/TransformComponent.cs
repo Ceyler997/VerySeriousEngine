@@ -12,30 +12,30 @@ namespace VerySeriousEngine.Components
     {
         private WorldObject ownerParent;
 
-        private Vector3 localScale;
-        private Quaternion localRotation;
-        private Vector3 localTranslation;
+        private Vector3 scale;
+        private Quaternion rotation;
+        private Vector3 location;
 
-        public Vector3 LocalTranslation {
-            get => localTranslation;
-            set => localTranslation = value;
+        public Vector3 Location {
+            get => location;
+            set => location = value;
         }
-        public Quaternion LocalRotation {
-            get => localRotation;
-            set => localRotation = value;
+        public Quaternion Rotation {
+            get => rotation;
+            set => rotation = value;
         }
-        public Vector3 LocalScale {
-            get => localScale;
-            set => localScale = value;
+        public Vector3 Scale {
+            get => scale;
+            set => scale = value;
         }
 
-        public Vector3 WorldTranslation {
+        public Vector3 WorldLocation {
             get => WorldTransform.TranslationVector;
             set {
                 Matrix inversedParentTransform = Matrix.Invert(GetParentWorldTransform());
                 Matrix worldTranslationMatrix = Matrix.Translation(value);
                 Matrix localTranslationMatrix = worldTranslationMatrix * inversedParentTransform;
-                LocalTranslation = localTranslationMatrix.TranslationVector;
+                Location = localTranslationMatrix.TranslationVector;
             }
         }
         public Quaternion WorldRotation {
@@ -47,7 +47,7 @@ namespace VerySeriousEngine.Components
                 Matrix inversedParentTransform = Matrix.Invert(GetParentWorldTransform());
                 Matrix worldRotationMatrix = Matrix.RotationQuaternion(value);
                 Matrix localRotationMatrix = worldRotationMatrix * inversedParentTransform;
-                localRotationMatrix.Decompose(out _, out localRotation, out _);
+                localRotationMatrix.Decompose(out _, out rotation, out _);
             }
         }
         public Vector3 WorldScale {
@@ -56,19 +56,19 @@ namespace VerySeriousEngine.Components
                 Matrix inversedParentTransform = Matrix.Invert(GetParentWorldTransform());
                 Matrix worldScaleMatrix = Matrix.Scaling(value);
                 Matrix localScaleMatrix = worldScaleMatrix * inversedParentTransform;
-                LocalScale = localScaleMatrix.ScaleVector;
+                Scale = localScaleMatrix.ScaleVector;
             }
         }
 
         public Matrix LocalTransform {
             get {
-                Matrix scaleMatrix = Matrix.Scaling(LocalScale);
-                Matrix rotationMatrix = Matrix.RotationQuaternion(LocalRotation);
-                Matrix translationMatrix = Matrix.Translation(LocalTranslation);
+                Matrix scaleMatrix = Matrix.Scaling(Scale);
+                Matrix rotationMatrix = Matrix.RotationQuaternion(Rotation);
+                Matrix translationMatrix = Matrix.Translation(Location);
 
                 return scaleMatrix * rotationMatrix * translationMatrix;
             }
-            set => value.Decompose(out localScale, out localRotation, out localTranslation);
+            set => value.Decompose(out scale, out rotation, out location);
         }
         public Matrix WorldTransform {
             get => LocalTransform * GetParentWorldTransform();
@@ -77,9 +77,9 @@ namespace VerySeriousEngine.Components
 
         public string PrettyLocalTransformString {
             get {
-                return "Location: " + LocalTranslation.ToString() + "\n" +
-                       "Rotation: " + LocalRotation.ToString() + "\n" +
-                       "Scale: " + LocalScale.ToString() + "\n";
+                return "Location: " + Location.ToString() + "\n" +
+                       "Rotation: " + Rotation.ToString() + "\n" +
+                       "Scale: " + Scale.ToString() + "\n";
             }
         }
 
