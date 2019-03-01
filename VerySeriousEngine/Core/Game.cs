@@ -27,13 +27,7 @@ namespace VerySeriousEngine.Core
         public float FrameTime { get; private set; }
 
         private readonly string gameName;
-
         private readonly RenderForm form;
-        private readonly Device device;
-        private readonly SwapChain swapChain;
-        private readonly Texture2D backBuffer;
-        private readonly RenderTargetView renderView;
-        private readonly Buffer worldTransformMatrixBuffer;
 
         private Game(string name, int windowWidth, int windowHeight, bool isWindowed)
         {
@@ -46,30 +40,14 @@ namespace VerySeriousEngine.Core
                 ClientSize = new System.Drawing.Size(windowWidth, windowHeight),
             };
 
-            var swapChainDesc = new SwapChainDescription()
-            {
-                BufferCount = 1,
-                ModeDescription = new ModeDescription(windowWidth, windowHeight, new Rational(60, 1), Format.R8G8B8A8_UNorm),
-                IsWindowed = isWindowed,
-                OutputHandle = form.Handle,
-                SampleDescription = new SampleDescription(4, 0),
-                SwapEffect = SwapEffect.Discard,
-                Usage = Usage.RenderTargetOutput,
-            };
-            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.Debug, swapChainDesc, out device, out swapChain);
+            GameRenderer = new Renderer(form, isWindowed);
+            GameConstructor = new Constructor(GameRenderer.Device);
+            GameWorlds = new List<World>();
 
-            backBuffer = swapChain.GetBackBuffer<Texture2D>(0);
-            renderView = new RenderTargetView(device, backBuffer);
-
-            GameConstructor = new Constructor(device);
-            worldTransformMatrixBuffer = GameConstructor.CreateEmptyBuffer(Matrix.SizeInBytes, BindFlags.ConstantBuffer);
-            GameRenderer = new Renderer(device, renderView, swapChain, worldTransformMatrixBuffer);
-
+            SetupTime();
             SetupInput();
             SetupPhysics();
-            SetupRender(windowWidth, windowHeight);
-
-            GameWorlds = new List<World>();
+            GameRenderer.Setup(GameConstructor);
         }
 
         public override string ToString()
@@ -97,14 +75,13 @@ namespace VerySeriousEngine.Core
             foreach (var world in GameWorlds)
                 world.Dispose();
 
-            worldTransformMatrixBuffer.Dispose();
-            renderView.Dispose();
-            backBuffer.Dispose();
-            swapChain.Dispose();
-            device.Dispose();
+            GameRenderer.Dispose();
             form.Dispose();
 
-            GameInstance = null;
+            if (GameInstance == this)
+                GameInstance = null;
+            else
+                Logger.LogWarning("Game Instance is not this at Dispose");
         }
 
         public void StartGame()
@@ -113,8 +90,13 @@ namespace VerySeriousEngine.Core
 
             if (CurrentWorld == null && GameWorlds.Count > 0)
                 CurrentWorld = GameWorlds[0];
-
+            
             RenderLoop.Run(form, GameLoop);
+        }
+
+        private void SetupTime()
+        {
+            Logger.LogWarning("Time setup not inpmlemented");
         }
 
         private void SetupInput()
@@ -125,22 +107,6 @@ namespace VerySeriousEngine.Core
         private void SetupPhysics()
         {
             Logger.LogWarning("Physics setup not inpmlemented");
-        }
-
-        private void SetupRender(int windowWidth, int windowHeight)
-        {
-            var context = device.ImmediateContext;
-
-            context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-            context.Rasterizer.State = new RasterizerState(
-                device,
-                new RasterizerStateDescription()
-                {
-                    CullMode = CullMode.None,
-                    FillMode = FillMode.Solid,
-                });
-            context.Rasterizer.SetViewport(new Viewport(0, 0, windowWidth, windowHeight));
-            context.OutputMerger.SetTargets(renderView);
         }
 
         private void GameLoop()

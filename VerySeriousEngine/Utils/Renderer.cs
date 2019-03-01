@@ -1,7 +1,10 @@
 ﻿using System;
 using SharpDX;
+using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+using SharpDX.Windows;
+using VerySeriousEngine.Core;
 using VerySeriousEngine.Interfaces;
 
 using Device = SharpDX.Direct3D11.Device;
@@ -9,19 +12,55 @@ using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace VerySeriousEngine.Utils
 {
-    public class Renderer
+    public class Renderer : IDisposable
     {
         private readonly Device device;
-        private readonly RenderTargetView renderView;
-        private readonly SwapChain swapChain;
-        private readonly Buffer worldTransformMatrixBuffer;
+        private readonly RenderForm form;
 
-        public Renderer(Device device, RenderTargetView renderView, SwapChain swapChain, SharpDX.Direct3D11.Buffer worldTransformMatrixBuffer)
+        private readonly SwapChain swapChain;
+        private readonly RenderTargetView renderView;
+        private readonly Texture2D backBuffer;
+
+        private Buffer worldTransformMatrixBuffer;
+
+        public Device Device { get => device; }
+
+        public Renderer(RenderForm form, bool isWindowed)
         {
-            this.device = device ?? throw new ArgumentNullException(nameof(device));
-            this.renderView = renderView ?? throw new ArgumentNullException(nameof(renderView));
-            this.swapChain = swapChain ?? throw new ArgumentNullException(nameof(swapChain));
-            this.worldTransformMatrixBuffer = worldTransformMatrixBuffer ?? throw new ArgumentNullException(nameof(worldTransformMatrixBuffer));
+            this.form = form ?? throw new ArgumentNullException(nameof(form));
+
+            var swapChainDesc = new SwapChainDescription()
+            {
+                BufferCount = 1,
+                ModeDescription = new ModeDescription(form.Width, form.Height, new Rational(60, 1), Format.R8G8B8A8_UNorm),
+                IsWindowed = isWindowed,
+                OutputHandle = form.Handle,
+                SampleDescription = new SampleDescription(4, 0),
+                SwapEffect = SwapEffect.Discard,
+                Usage = Usage.RenderTargetOutput,
+            };
+            Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.Debug, swapChainDesc, out device, out swapChain);
+
+            backBuffer = swapChain.GetBackBuffer<Texture2D>(0);
+            renderView = new RenderTargetView(device, backBuffer);
+        }
+
+        public void Setup(Constructor constructor)
+        {
+            worldTransformMatrixBuffer = constructor.CreateEmptyBuffer(Matrix.SizeInBytes, BindFlags.ConstantBuffer);
+
+            var context = device.ImmediateContext;
+
+            context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+            context.Rasterizer.State = new RasterizerState(
+                device,
+                new RasterizerStateDescription()
+                {
+                    CullMode = CullMode.None,
+                    FillMode = FillMode.Solid,
+                });
+            context.Rasterizer.SetViewport(new Viewport(0, 0, form.Width, form.Height));
+            context.OutputMerger.SetTargets(renderView);
         }
 
         public void StartFrame()
@@ -52,6 +91,15 @@ namespace VerySeriousEngine.Utils
         public void FinishFrame()
         {
             swapChain.Present(1, PresentFlags.None);
+        }
+
+        public void Dispose()
+        {
+            worldTransformMatrixBuffer.Dispose();
+            renderView.Dispose();
+            backBuffer.Dispose();
+            swapChain.Dispose();
+            device.Dispose();
         }
 
     }
