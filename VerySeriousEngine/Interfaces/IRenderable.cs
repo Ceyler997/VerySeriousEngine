@@ -8,6 +8,7 @@ namespace VerySeriousEngine.Interfaces
     //     Interface, that should be implemented by all supposed to be rendered objects/components
     public interface IRenderable
     {
+        bool IsRendered { get; }
         InputLayout InputLayout { get; }
         Buffer IndexBuffer { get; }
         VertexBufferBinding VertexBufferBinding { get; }

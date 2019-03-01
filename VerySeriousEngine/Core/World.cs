@@ -15,7 +15,7 @@ namespace VerySeriousEngine.Core
         public List<IRenderable> Renderable { get; }
 
         public string WorldName { get; }
-        public PointOfView WorldPointOfView { get; }
+        public PointOfView WorldPointOfView { get; set; }
         public bool IsValid { get; private set; }
 
         public World(string worldName)
@@ -74,6 +74,8 @@ namespace VerySeriousEngine.Core
             var ViewProjectionMatrix = WorldPointOfView.ViewMatrix * WorldPointOfView.ProjectionMatrix;
             foreach (var renderable in Renderable)
             {
+                if(!renderable.IsRendered)
+                    continue;
                 Matrix WVP = renderable.WorldMatrix * ViewProjectionMatrix;
                 renderer.RenderObject(renderable, WVP);
             }

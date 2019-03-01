@@ -31,7 +31,7 @@ namespace VerySeriousEngine.Utils
 
         public void RenderObject(IRenderable renderable, Matrix WVP)
         {
-            if (renderable == null || WVP == null)
+            if (renderable == null)
                 return;
 
             var context = device.ImmediateContext;
