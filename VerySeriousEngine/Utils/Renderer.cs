@@ -25,6 +25,9 @@ namespace VerySeriousEngine.Utils
 
         public Device Device { get => device; }
 
+        public int FrameWidth { get => form.Width; }
+        public int FrameHeight { get => form.Height; }
+
         public Renderer(RenderForm form, bool isWindowed)
         {
             this.form = form ?? throw new ArgumentNullException(nameof(form));

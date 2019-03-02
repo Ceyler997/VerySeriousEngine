@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using VerySeriousEngine.Interfaces;
-using VerySeriousEngine.Utils;
 
 namespace VerySeriousEngine.Core
 {
@@ -15,7 +14,7 @@ namespace VerySeriousEngine.Core
         public List<IRenderable> Renderable { get; }
 
         public string WorldName { get; }
-        public PointOfView WorldPointOfView { get; set; }
+        public PointOfView WorldPointOfView { get; }
         public bool IsValid { get; private set; }
 
         public World(string worldName)
