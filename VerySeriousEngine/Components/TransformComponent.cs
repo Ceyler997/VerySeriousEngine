@@ -15,7 +15,7 @@ namespace VerySeriousEngine.Components
         private Vector3 scale;
         private Quaternion rotation;
         private Vector3 location;
-
+        
         public Vector3 Location {
             get => location;
             set => location = value;
@@ -60,6 +60,16 @@ namespace VerySeriousEngine.Components
             }
         }
 
+        public Vector3 Right {
+            get => WorldTransform.Right;
+        }
+        public Vector3 Up {
+            get => WorldTransform.Up;
+        }
+        public Vector3 Forward {
+            get => WorldTransform.Forward;
+        }
+
         public Matrix LocalTransform {
             get {
                 Matrix scaleMatrix = Matrix.Scaling(Scale);
@@ -74,7 +84,7 @@ namespace VerySeriousEngine.Components
             get => LocalTransform * GetParentWorldTransform();
             set => LocalTransform = value * Matrix.Invert(GetParentWorldTransform());
         }
-
+        
         public string PrettyLocalTransformString {
             get {
                 return "Location: " + Location.ToString() + "\n" +
@@ -109,7 +119,7 @@ namespace VerySeriousEngine.Components
             if (ownerParent == null)
                 return Matrix.Identity; // Object is a root
 
-            return ownerParent.TransformComponent.WorldTransform;
+            return ownerParent.WorldTransform;
         }
     }
 }
