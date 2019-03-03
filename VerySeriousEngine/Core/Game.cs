@@ -1,14 +1,7 @@
-﻿using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using SharpDX.Windows;
+﻿using SharpDX.Windows;
 using System;
 using System.Collections.Generic;
 using VerySeriousEngine.Utils;
-
-using Device = SharpDX.Direct3D11.Device;
-using Buffer = SharpDX.Direct3D11.Buffer;
 
 namespace VerySeriousEngine.Core
 {
@@ -27,24 +20,24 @@ namespace VerySeriousEngine.Core
         public TimeManager TimeManager { get; }
         public InputManager InputManager { get; }
 
-        private readonly string gameName;
-        private readonly RenderForm form;
+        public string GameName { get; }
+        public RenderForm Form { get; }
 
         private Game(string name, int windowWidth, int windowHeight, bool isWindowed)
         {
             Logger.Log("Game construction");
 
-            gameName = name ?? throw new ArgumentNullException(nameof(gameName));
+            GameName = name ?? throw new ArgumentNullException(nameof(GameName));
 
-            form = new RenderForm(name)
+            Form = new RenderForm(name)
             {
                 ClientSize = new System.Drawing.Size(windowWidth, windowHeight),
             };
 
-            GameRenderer = new Renderer(form, isWindowed);
+            GameRenderer = new Renderer(Form, isWindowed);
             GameConstructor = new Constructor(GameRenderer.Device);
             TimeManager = new TimeManager();
-            InputManager = new InputManager(form);
+            InputManager = new InputManager();
             GameWorlds = new List<World>();
 
             TimeManager.Setup();
@@ -54,7 +47,7 @@ namespace VerySeriousEngine.Core
 
         public override string ToString()
         {
-            return gameName;
+            return GameName;
         }
 
         public static Game CreateGame(string name, int windowWidth, int windowHeight, bool isWindowed)
@@ -72,13 +65,13 @@ namespace VerySeriousEngine.Core
 
         public void Dispose()
         {
-            Logger.Log("Disposing game " + gameName);
+            Logger.Log("Disposing game " + GameName);
 
             foreach (var world in GameWorlds)
                 world.Dispose();
 
             GameRenderer.Dispose();
-            form.Dispose();
+            Form.Dispose();
 
             if (GameInstance == this)
                 GameInstance = null;
@@ -88,12 +81,12 @@ namespace VerySeriousEngine.Core
 
         public void StartGame()
         {
-            Logger.Log("Starting game " + gameName);
+            Logger.Log("Starting game " + GameName);
 
             if (CurrentWorld == null && GameWorlds.Count > 0)
                 CurrentWorld = GameWorlds[0];
             
-            RenderLoop.Run(form, GameLoop);
+            RenderLoop.Run(Form, GameLoop);
         }
 
         private void SetupPhysics()

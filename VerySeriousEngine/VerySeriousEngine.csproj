@@ -75,6 +75,8 @@
     <Compile Include="Core\PointOfView.cs" />
     <Compile Include="Core\TimeManager.cs" />
     <Compile Include="Core\World.cs" />
+    <Compile Include="Input\KeyboardInput.cs" />
+    <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Interfaces\IRenderable.cs" />
     <Compile Include="Objects\WorldObject.cs" />
     <Compile Include="Utils\Constructor.cs" />
