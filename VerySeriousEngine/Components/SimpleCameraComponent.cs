@@ -96,8 +96,7 @@ namespace VerySeriousEngine.Components
         public override void Update(float frameTime)
         {
             base.Update(frameTime);
-            var transform = worldParent.TransformComponent;
-            pointOfView.ViewMatrix = Matrix.Invert(transform.WorldTransform);
+            pointOfView.ViewMatrix = Matrix.Invert(worldParent.WorldTransform);
             pointOfView.ProjectionMatrix = projectionMatrix;
         }
     }

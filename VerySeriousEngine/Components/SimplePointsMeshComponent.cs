@@ -55,7 +55,7 @@ namespace VerySeriousEngine.Components
 
         public int IndexCount => indexCount;
 
-        public Matrix WorldMatrix => worldOwner.TransformComponent.WorldTransform;
+        public Matrix WorldMatrix => worldOwner.WorldTransform;
 
         public bool IsRendered => IsActive;
     }
