@@ -89,6 +89,11 @@ namespace VerySeriousEngine.Core
             RenderLoop.Run(Form, GameLoop);
         }
 
+        public void ExitGame()
+        {
+            Form.Close();
+        }
+
         private void SetupPhysics()
         {
             Logger.LogWarning("Physics not inpmlemented yet");
