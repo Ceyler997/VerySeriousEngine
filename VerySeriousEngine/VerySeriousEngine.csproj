@@ -78,6 +78,7 @@
     <Compile Include="Input\KeyboardInput.cs" />
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Interfaces\IRenderable.cs" />
+    <Compile Include="Objects\SimpleControllableCamera.cs" />
     <Compile Include="Objects\WorldObject.cs" />
     <Compile Include="Utils\Constructor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
