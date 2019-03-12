@@ -6,26 +6,33 @@ namespace VerySeriousEngine.Input
     public class KeyboardInput : IGameInput
     {
         private readonly Keys key;
+        private readonly float modifier;
 
-        public InputStateUpdate StateUpdate { get; set; }
+        public float Value { get; set; }
 
-        public KeyboardInput(Keys key)
+        //  Parameters:
+        //      key:
+        //          Key, that triggers the input
+        //      pressValue:
+        //          value, that will be passed to the delegate on key press
+        public KeyboardInput(Keys key, float pressModifier = 1.0f)
         {
             this.key = key;
+            modifier = pressModifier;
             Game.GameInstance.Form.KeyDown += Form_KeyDown;
             Game.GameInstance.Form.KeyUp += Form_KeyUp;
         }
 
         private void Form_KeyDown(object sender, KeyEventArgs keyUpEvent)
         {
-            if (keyUpEvent.KeyCode == key && StateUpdate != null)
-                StateUpdate(this, 1.0f);
+            if (keyUpEvent.KeyCode == key)
+                Value = modifier;
         }
 
         private void Form_KeyUp(object sender, KeyEventArgs keyUpEvent)
         {
-            if (keyUpEvent.KeyCode == key && StateUpdate != null)
-                StateUpdate(this, 0.0f);
+            if (keyUpEvent.KeyCode == key)
+                Value = 0.0f;
         }
     }
 }

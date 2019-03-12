@@ -4,11 +4,9 @@ using System.Collections.Generic;
 
 namespace VerySeriousEngine.Core
 {
-    public delegate void InputStateUpdate(IGameInput input, float value);
-
     public interface IGameInput
     {
-        InputStateUpdate StateUpdate { get; set; }
+        float Value { get; }
     }
 
     public interface IActionListener
@@ -22,6 +20,8 @@ namespace VerySeriousEngine.Core
         void OnAxisUpdate(string axis, float value);
     }
 
+    // TODO: Keyboard axis works bad, need to fix it
+
     public class InputManager
     {
         private readonly Dictionary<string, HashSet<IActionListener>> actionListeners;
@@ -29,8 +29,7 @@ namespace VerySeriousEngine.Core
 
         private readonly Dictionary<IGameInput, string> axesMapping;
         private readonly Dictionary<IGameInput, string> actionsMapping;
-
-        private readonly Dictionary<IGameInput, float> currentInputValue;
+        
         private readonly Dictionary<IGameInput, float> lastHandledActionValue;
 
         public InputManager()
@@ -40,8 +39,7 @@ namespace VerySeriousEngine.Core
 
             axesMapping = new Dictionary<IGameInput, string>();
             actionsMapping = new Dictionary<IGameInput, string>();
-
-            currentInputValue = new Dictionary<IGameInput, float>();
+            
             lastHandledActionValue = new Dictionary<IGameInput, float>();
         }
 
@@ -55,9 +53,7 @@ namespace VerySeriousEngine.Core
                 throw new ArgumentNullException(nameof(actionName));
 
             actionsMapping.Add(action, actionName);
-            currentInputValue[action] = 0.0f;
             lastHandledActionValue[action] = 0.0f;
-            action.StateUpdate = InputUpdate;
         }
 
         public void RemoveAction(IGameInput action)
@@ -65,37 +61,33 @@ namespace VerySeriousEngine.Core
             if (action == null || actionsMapping.ContainsKey(action) == false)
                 return;
 
-            if (action.StateUpdate == InputUpdate)
-                action.StateUpdate = null;
-
             actionsMapping.Remove(action);
-            currentInputValue.Remove(action);
             lastHandledActionValue.Remove(action);
         }
 
-        public void SubscribeOnAction(string action, IActionListener listener)
+        public void SubscribeOnAction(string actionName, IActionListener listener)
         {
-            if (action == null)
-                throw new ArgumentNullException(nameof(action));
+            if (actionName == null)
+                throw new ArgumentNullException(nameof(actionName));
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
-            if (actionsMapping.ContainsValue(action) == false)
-                throw new ArgumentException("Action " + action + " not exists");
+            if (actionsMapping.ContainsValue(actionName) == false)
+                throw new ArgumentException("Action " + actionName + " not exists");
 
-            if (actionListeners.ContainsKey(action))
-                actionListeners[action].Add(listener);
+            if (actionListeners.ContainsKey(actionName))
+                actionListeners[actionName].Add(listener);
             else
-                actionListeners[action] = new HashSet<IActionListener> { listener };
+                actionListeners[actionName] = new HashSet<IActionListener> { listener };
         }
 
-        public void UnsubscribeFromAction(string action, IActionListener listener)
+        public void UnsubscribeFromAction(string actionName, IActionListener listener)
         {
-            if (listener == null || actionListeners.ContainsKey(action) == false)
+            if (listener == null || actionListeners.ContainsKey(actionName) == false)
                 return;
 
-            actionListeners[action].Remove(listener);
-            if (actionListeners[action].Count == 0)
-                actionListeners.Remove(action);
+            actionListeners[actionName].Remove(listener);
+            if (actionListeners[actionName].Count == 0)
+                actionListeners.Remove(actionName);
         }
         #endregion
 
@@ -109,8 +101,6 @@ namespace VerySeriousEngine.Core
                 throw new ArgumentNullException(nameof(axisName));
 
             axesMapping.Add(axis, axisName);
-            currentInputValue[axis] = 0.0f;
-            axis.StateUpdate = InputUpdate;
         }
 
         public void RemoveAxis(IGameInput axis)
@@ -118,11 +108,7 @@ namespace VerySeriousEngine.Core
             if (axis == null || axesMapping.ContainsKey(axis) == false)
                 return;
 
-            if (axis.StateUpdate == InputUpdate)
-                axis.StateUpdate = null;
-
             axesMapping.Remove(axis);
-            currentInputValue.Remove(axis);
         }
 
         public void SubscribeOnAxis(string axis, IAxisListener listener)
@@ -147,22 +133,23 @@ namespace VerySeriousEngine.Core
         }
         #endregion
 
-        private void InputUpdate(IGameInput input, float value)
-        {
-            currentInputValue[input] = value;
-        }
-
         internal void Update()
         {
+            UpdateAxis();
+            UpdateActions();
+        }
+
+        private void UpdateActions()
+        {
             // Action pressed/released will be handles once per every input
-            foreach(var action in actionsMapping)
+            foreach (var action in actionsMapping)
             {
-                float currentValue = currentInputValue[action.Key];
+                float currentValue = action.Key.Value;
                 float lastHandled = lastHandledActionValue[action.Key];
                 if (currentValue == lastHandled)
                     continue;
 
-                if(lastHandled == 0.0f) // wasn't pressed, pressed now
+                if (lastHandled == 0.0f) // wasn't pressed, pressed now
                 {
                     foreach (var listener in actionListeners[action.Value])
                         listener.OnPressed(action.Value);
@@ -175,19 +162,21 @@ namespace VerySeriousEngine.Core
 
                 lastHandledActionValue[action.Key] = currentValue;
             }
+        }
 
+        private void UpdateAxis()
+        {
             // Axes will be handles once per every axis, with sum of all inputs
             var inputCollector = new Dictionary<string, float>();
             foreach (var axis in axesMapping)
             {
                 if (inputCollector.ContainsKey(axis.Value))
-                    inputCollector[axis.Value] += currentInputValue[axis.Key];
+                    inputCollector[axis.Value] += axis.Key.Value;
                 else
-                    inputCollector[axis.Value] = currentInputValue[axis.Key];
-                currentInputValue[axis.Key] = 0.0f;
+                    inputCollector[axis.Value] = axis.Key.Value;
             }
 
-                foreach (var axis in axisListeners)
+            foreach (var axis in axisListeners)
             {
                 foreach (var listener in axis.Value)
                     listener.OnAxisUpdate(axis.Key, inputCollector[axis.Key]);
