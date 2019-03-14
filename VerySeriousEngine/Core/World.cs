@@ -1,6 +1,7 @@
 ﻿using SharpDX;
 using System;
 using System.Collections.Generic;
+using VerySeriousEngine.Components.Physics2D;
 using VerySeriousEngine.Interfaces;
 
 namespace VerySeriousEngine.Core
@@ -12,6 +13,7 @@ namespace VerySeriousEngine.Core
     {
         public List<GameObject> GameObjects { get; }
         public List<IRenderable> Renderable { get; }
+        public List<Physics2DComponent> Physics2DComponents { get; }
 
         public string WorldName { get; }
         public PointOfView WorldPointOfView { get; }
@@ -25,6 +27,7 @@ namespace VerySeriousEngine.Core
             WorldPointOfView = new PointOfView();
             GameObjects = new List<GameObject>();
             Renderable = new List<IRenderable>();
+            Physics2DComponents = new List<Physics2DComponent>();
 
             var instance = Game.GameInstance;
             if (instance == null)
@@ -88,6 +91,7 @@ namespace VerySeriousEngine.Core
 
         private void UpdatePhysics(float frameTime)
         {
+            Game.GameInstance.Physics2D.Update(frameTime, this);
         }
     }
 }

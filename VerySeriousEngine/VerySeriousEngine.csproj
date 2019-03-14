@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Physics2D\Physics2DComponent.cs" />
     <Compile Include="Components\SimplePointsMeshComponent.cs" />
     <Compile Include="Components\SimpleCameraComponent.cs" />
     <Compile Include="Components\TransformComponent.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Core\GameComponent.cs" />
     <Compile Include="Core\GameObject.cs" />
     <Compile Include="Core\InputManager.cs" />
+    <Compile Include="Core\PhysicsEngine2D.cs" />
     <Compile Include="Core\PointOfView.cs" />
     <Compile Include="Core\TimeManager.cs" />
     <Compile Include="Core\World.cs" />

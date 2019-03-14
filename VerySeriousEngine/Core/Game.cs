@@ -17,6 +17,7 @@ namespace VerySeriousEngine.Core
 
         public Constructor GameConstructor { get; }
         public Renderer GameRenderer { get; }
+        public PhysicsEngine2D Physics2D {get;}
         public TimeManager TimeManager { get; }
         public InputManager InputManager { get; }
 
@@ -38,6 +39,7 @@ namespace VerySeriousEngine.Core
             GameConstructor = new Constructor(GameRenderer.Device);
             TimeManager = new TimeManager();
             InputManager = new InputManager();
+            Physics2D = new PhysicsEngine2D();
             GameWorlds = new List<World>();
 
             TimeManager.Setup();
