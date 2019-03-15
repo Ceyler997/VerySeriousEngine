@@ -29,17 +29,17 @@ namespace Pong
             camera.CameraComponent.OrthoHeight = gameHeight;
 
             var gameField = new GameField(gameWidth, gameHeight);
-
-            var platformLeft = new Platform(20, 100, Color.Red, objectName: "Left Platform")
+            var gameState = new GameState(gameField)
             {
-                Location = new Vector3(-350, 0, 0),
+                BallSpeed = 750.0f,
             };
-            var gameState = new GameState(gameField);
-            var controller = new PongPlayerController(gameField)
+
+            var playerController = new PongPlayerController(gameField, new Vector3(350, 0, 0))
             {
                 ExitAction = "Exit",
                 UpAxis = "Up",
             };
+            var compController = new PontAIController(gameField, gameState.Ball, new Vector3(-350, 0, 0));
 
             pong.StartGame();
             pong.Dispose();
