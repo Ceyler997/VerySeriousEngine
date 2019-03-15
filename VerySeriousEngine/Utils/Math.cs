@@ -3,7 +3,7 @@ using System;
 
 namespace VerySeriousEngine.Utils
 {
-    class VSEMath
+    public class VSEMath
     {
         public static float PointToSegmentDistance2D(Vector2 Point, Vector2 SegmentPoint1, Vector2 SegmentPoint2)
         {
