@@ -149,6 +149,9 @@ namespace VerySeriousEngine.Core
                 if (currentValue == lastHandled)
                     continue;
 
+                if (actionListeners.ContainsKey(action.Value) == false)
+                    continue; // no listeners
+
                 if (lastHandled == 0.0f) // wasn't pressed, pressed now
                 {
                     foreach (var listener in actionListeners[action.Value])

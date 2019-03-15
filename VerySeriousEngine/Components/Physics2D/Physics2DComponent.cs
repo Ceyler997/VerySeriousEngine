@@ -25,6 +25,7 @@ namespace VerySeriousEngine.Components.Physics2D
         {
             worldOwner = owner;
             owner.GameWorld.Physics2DComponents.Add(this);
+            overlappedComponents = new List<Physics2DComponent>();
         }
 
         public abstract bool IsPointInside(Vector2 point);
@@ -51,11 +52,11 @@ namespace VerySeriousEngine.Components.Physics2D
             if(isOverlapped)
             {
                 if (overlappedComponents.Contains(other))
-                    OnOverlap(this, other);
+                    OnOverlap?.Invoke(this, other);
                 else
                 {
                     overlappedComponents.Add(other);
-                    OnOverlapBegin(this, other);
+                    OnOverlapBegin?.Invoke(this, other);
                 }
             }
             else
@@ -63,7 +64,7 @@ namespace VerySeriousEngine.Components.Physics2D
                 if(overlappedComponents.Contains(other))
                 {
                     overlappedComponents.Remove(other);
-                    OnOverlapEnd(this, other);
+                    OnOverlapEnd?.Invoke(this, other);
                 }
             }
         }

@@ -7,8 +7,6 @@ namespace VerySeriousEngine.Objects
 {
     public class SimpleControllableCamera : WorldObject, IAxisListener
     {
-        private readonly SimpleCameraComponent cameraComponent;
-
         private Vector3 movementVector;
         private Vector2 rotationVector;
 
@@ -18,6 +16,8 @@ namespace VerySeriousEngine.Objects
 
         private string rightRotateAxis;
         private string upRotateAxis;
+
+        public SimpleCameraComponent CameraComponent { get; }
 
         public string ForwardAxis {
             get => forwardAxis;
@@ -91,7 +91,7 @@ namespace VerySeriousEngine.Objects
 
         public SimpleControllableCamera(WorldObject parent = null, string objectName = null ) : base(parent, objectName)
         {
-            cameraComponent = new SimpleCameraComponent(this);
+            CameraComponent = new SimpleCameraComponent(this);
         }
 
         public override void Update(float frameTime)

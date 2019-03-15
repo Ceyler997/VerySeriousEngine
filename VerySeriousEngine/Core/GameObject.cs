@@ -97,7 +97,7 @@ namespace VerySeriousEngine.Core
             Logger.Log(ToString() + " object destroy");
         }
 
-        public void InternalUpdate(float frameTime)
+        internal void InternalUpdate(float frameTime)
         {
             if (IsActive == false)
                 return;
