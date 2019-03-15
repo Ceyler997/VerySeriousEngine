@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="GameField.cs" />
     <Compile Include="GameObjects.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="PlayerController.cs" />
     <Compile Include="PongGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

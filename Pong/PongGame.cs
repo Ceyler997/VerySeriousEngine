@@ -34,10 +34,7 @@ namespace Pong
             {
                 Location = new Vector3(-350, 0, 0),
             };
-            var ball = new Ball(10, Color.White, 16)
-            {
-                MovementDirection = Vector2.UnitX,
-            };
+            var gameState = new GameState(gameField);
             var controller = new PongPlayerController(gameField)
             {
                 ExitAction = "Exit",

@@ -12,7 +12,7 @@ namespace Pong
         Right,
     }
 
-    delegate void OnGoal(ESide lostSide);
+    delegate void OnGoal(ESide scoredSide);
 
     class GameField : WorldObject
     {
@@ -60,13 +60,13 @@ namespace Pong
             {
                 if(thisComponent.Owner == LeftEdge)
                 {
-                    Goal?.Invoke(ESide.Left);
+                    Goal?.Invoke(ESide.Right);
                     return;
                 }
 
                 if(thisComponent.Owner == RightEdge)
                 {
-                    Goal?.Invoke(ESide.Right);
+                    Goal?.Invoke(ESide.Left);
                     return;
                 }
 
