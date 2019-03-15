@@ -32,6 +32,11 @@ namespace Pong
             {
                 WorldLocation = new Vector3(350, 0, -100),
             };
+            var ball = new Ball(10, Color.White, 16)
+            {
+                WorldLocation = new Vector3(0, 0, -100),
+                MovementDirection = Vector2.UnitX,
+            };
             var controller = new PongPlayerController(platformRight)
             {
                 ExitAction = "Exit",

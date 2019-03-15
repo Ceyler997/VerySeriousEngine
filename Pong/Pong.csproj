@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Platform.cs" />
+    <Compile Include="GameObjects.cs" />
     <Compile Include="PlayerController.cs" />
     <Compile Include="PongGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
