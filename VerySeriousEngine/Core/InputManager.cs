@@ -103,6 +103,12 @@ namespace VerySeriousEngine.Core
             axesMapping.Add(axis, axisName);
         }
 
+        public void AddAxes(IGameInput[] axes, string axisName)
+        {
+            foreach (var axis in axes)
+                AddAxis(axis, axisName);
+        }
+
         public void RemoveAxis(IGameInput axis)
         {
             if (axis == null || axesMapping.ContainsKey(axis) == false)
