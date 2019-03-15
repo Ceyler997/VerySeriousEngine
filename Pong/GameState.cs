@@ -15,7 +15,10 @@ namespace Pong
         public float BallRadius { get; set; } = 10.0f;
         public Color BallColor { get; set; } = Color.White;
         public int BallSegmentsAmout { get; set; } = 16;
-        public float BallSpeed { get; set; } = 500.0f;
+        public float BallSpeed {
+            get => Ball.MovementSpeed;
+            set => Ball.MovementSpeed = value;
+        }
 
         public GameState(GameField gameField, GameObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
         {
@@ -28,10 +31,9 @@ namespace Pong
                 [ESide.Right] = 0
             };
 
-            Ball = new Ball(BallRadius, BallColor, BallSegmentsAmout)
-            {
-                MovementSpeed = BallSpeed,
-            };
+            Ball = new Ball(BallRadius, BallColor, BallSegmentsAmout);
+
+            BallSpeed = 500.0f;
 
             ResetBall(ESide.Left);
         }
