@@ -65,9 +65,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\Physics2D\CircleComponent.cs" />
+    <Compile Include="Components\Physics2D\CircleColliderComponent.cs" />
     <Compile Include="Components\Physics2D\Physics2DComponent.cs" />
-    <Compile Include="Components\Physics2D\RectangleComponent.cs" />
+    <Compile Include="Components\Physics2D\RectangleColliderComponent.cs" />
     <Compile Include="Components\SimplePointsMeshComponent.cs" />
     <Compile Include="Components\SimpleCameraComponent.cs" />
     <Compile Include="Components\TransformComponent.cs" />

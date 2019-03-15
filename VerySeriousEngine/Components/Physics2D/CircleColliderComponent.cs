@@ -4,7 +4,7 @@ using VerySeriousEngine.Utils;
 
 namespace VerySeriousEngine.Components.Physics2D
 {
-    public class CircleComponent : Physics2DComponent
+    public class CircleColliderComponent : Physics2DComponent
     {
         private float radius;
 
@@ -12,7 +12,7 @@ namespace VerySeriousEngine.Components.Physics2D
 
         public void SetRadius(float value) { radius = value; }
 
-        public CircleComponent(WorldObject owner, float radius, string componentName = null, bool isActiveAtStart = true) : base(owner, componentName, isActiveAtStart)
+        public CircleColliderComponent(WorldObject owner, float radius, string componentName = null, bool isActiveAtStart = true) : base(owner, componentName, isActiveAtStart)
         {
             this.radius = radius;
         }
@@ -22,10 +22,10 @@ namespace VerySeriousEngine.Components.Physics2D
             if (IsReachable(other) == false)
                 return false;
 
-            if (other is CircleComponent)
+            if (other is CircleColliderComponent)
                 return true;
 
-            if (other is RectangleComponent otherRectangle)
+            if (other is RectangleColliderComponent otherRectangle)
             {
                 // if rectangle centre inside the circle
                 if (IsPointInside(otherRectangle.Location))

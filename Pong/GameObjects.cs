@@ -10,7 +10,7 @@ namespace Pong
 {
     class Platform : WorldObject
     {
-        public RectangleComponent Collider { get; }
+        public RectangleColliderComponent Collider { get; }
         public SimplePointsMeshComponent Mesh { get; }
 
         public Platform(float width, float height, Color color, GameObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
@@ -26,7 +26,7 @@ namespace Pong
             };
             Mesh = new SimplePointsMeshComponent(this, shaderSetup, points, indices);
 
-            Collider = new RectangleComponent(this, width, height);
+            Collider = new RectangleColliderComponent(this, width, height);
             Collider.OnOverlapBegin += Collider_OnOverlapBegin;
         }
 
@@ -42,7 +42,7 @@ namespace Pong
 
         private Vector2 movementDirection;
 
-        public CircleComponent Collider { get; }
+        public CircleColliderComponent Collider { get; }
         public SimplePointsMeshComponent Mesh { get; }
 
         public Vector2 MovementDirection {
@@ -76,7 +76,7 @@ namespace Pong
 
             Mesh = new SimplePointsMeshComponent(this, shaderSetup, points, indices);
 
-            Collider = new CircleComponent(this, radius);
+            Collider = new CircleColliderComponent(this, radius);
         }
 
         public override void Update(float frameTime)

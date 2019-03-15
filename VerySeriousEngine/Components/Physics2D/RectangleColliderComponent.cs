@@ -5,7 +5,7 @@ using VerySeriousEngine.Utils;
 
 namespace VerySeriousEngine.Components.Physics2D
 {
-    public class RectangleComponent : Physics2DComponent
+    public class RectangleColliderComponent : Physics2DComponent
     {
 
         public override float Radius => Convert.ToSingle(Math.Sqrt(Width * Width + Height * Height));
@@ -28,7 +28,7 @@ namespace VerySeriousEngine.Components.Physics2D
             }
         }
 
-        public RectangleComponent(WorldObject owner, float width, float height, string componentName = null, bool isActiveAtStart = true) : base(owner, componentName, isActiveAtStart)
+        public RectangleColliderComponent(WorldObject owner, float width, float height, string componentName = null, bool isActiveAtStart = true) : base(owner, componentName, isActiveAtStart)
         {
             Width = width;
             Height = height;
@@ -36,13 +36,13 @@ namespace VerySeriousEngine.Components.Physics2D
 
         public override bool IsOverlappedWith(Physics2DComponent other)
         {
-            if (other is CircleComponent)
+            if (other is CircleColliderComponent)
                 return other.IsOverlappedWith(this);
 
             if (IsReachable(other) == false)
                 return false;
 
-            if (other is RectangleComponent otherRectangle)
+            if (other is RectangleColliderComponent otherRectangle)
                 return IsProjectionIntersets(otherRectangle) && otherRectangle.IsProjectionIntersets(this);
 
             return false;
@@ -66,7 +66,7 @@ namespace VerySeriousEngine.Components.Physics2D
             return VSEMath.RotatePointOnAngle(point - Location, -Angle);
         }
 
-        protected bool IsProjectionIntersets(RectangleComponent other)
+        protected bool IsProjectionIntersets(RectangleColliderComponent other)
         {
             var projectedPoints = Array.ConvertAll(other.Points, point => GlobalToLocal(point));
 
