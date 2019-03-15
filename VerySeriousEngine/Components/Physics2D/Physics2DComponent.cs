@@ -9,9 +9,10 @@ namespace VerySeriousEngine.Components.Physics2D
 
     public abstract class Physics2DComponent : GameComponent
     {
-        public float Depth { get => worldOwner.WorldLocation.Z; }
-        public Vector2 Location { get => new Vector2(worldOwner.WorldLocation.X, worldOwner.WorldLocation.Y); }
-        public float Radius { get; }
+        public virtual float Depth { get => worldOwner.WorldLocation.Z; }
+        public virtual Vector2 Location { get => new Vector2(worldOwner.WorldLocation.X, worldOwner.WorldLocation.Y); }
+        public virtual float Angle { get => worldOwner.WorldRotation.Angle; } // TODO: make something more reliable
+        public abstract float Radius { get; }
 
         public event OnOverlapEvent OnOverlapBegin;
         public event OnOverlapEvent OnOverlap;
@@ -25,6 +26,8 @@ namespace VerySeriousEngine.Components.Physics2D
             worldOwner = owner;
             owner.GameWorld.Physics2DComponents.Add(this);
         }
+
+        public abstract bool IsPointInside(Vector2 point);
 
         public abstract bool IsOverlappedWith(Physics2DComponent other);
 
@@ -42,7 +45,7 @@ namespace VerySeriousEngine.Components.Physics2D
 
                 return;
             }
-
+            
             bool isOverlapped = IsOverlappedWith(other);
 
             if(isOverlapped)
@@ -69,6 +72,19 @@ namespace VerySeriousEngine.Components.Physics2D
         {
             base.OnDestroy();
             worldOwner.GameWorld.Physics2DComponents.Remove(this);
+        }
+
+        protected bool IsReachable(Physics2DComponent other)
+        {
+            if (other == null)
+                return false;
+
+            if (Depth != other.Depth)
+                return false;
+
+            float distanceSquared = (Location - other.Location).LengthSquared();
+
+            return distanceSquared <= (Radius + other.Radius) * (Radius + other.Radius);
         }
     }
 }
