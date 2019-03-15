@@ -25,21 +25,7 @@ namespace Pong
                     return;
 
                 var fieldBounds = FieldBounds;
-
-                if (controlledPlatform != null)
-                {
-                    controlledPlatform.Collider.OnOverlapBegin -= Collider_OnOverlapBegin;
-                    controlledPlatform.Collider.OnOverlapEnd -= Collider_OnOverlapEnd;
-                    controlledPlatform = null;
-                }
-
-                if(value != null)
-                {
-                    value.Collider.OnOverlapBegin += Collider_OnOverlapBegin;
-                    value.Collider.OnOverlapEnd += Collider_OnOverlapEnd;
-                    controlledPlatform = value;
-                }
-
+                controlledPlatform = value;
                 // update field bounds to make it match to new platform
                 FieldBounds = fieldBounds;
             }
@@ -107,12 +93,6 @@ namespace Pong
         {
             ControlledPlatform = controlledPlatform;
             FieldBounds = new Vector2(800, 600);
-
-            // ToDo: Remove
-            if(controlledPlatform != null)
-            {
-                controlledPlatform.Collider.OnOverlap += TEMP;
-            }
         }
 
         public override void Update(float frameTime)
@@ -128,26 +108,6 @@ namespace Pong
             location.Y = MathUtil.Clamp(location.Y, -bounds.Y, bounds.Y);
             ControlledPlatform.Location = location;
         }
-
-
-
-        #region Collision handling
-
-        private void TEMP(Physics2DComponent thisComponent, Physics2DComponent otherComponent)
-        {
-            Logger.Log(thisComponent.ToString() + " overlapping with " + otherComponent.ToString());
-        }
-
-        private void Collider_OnOverlapEnd(Physics2DComponent thisComponent, Physics2DComponent otherComponent)
-        {
-            Logger.Log(thisComponent.ToString() + " end overlap with " + otherComponent.ToString());
-        }
-
-        private void Collider_OnOverlapBegin(Physics2DComponent thisComponent, Physics2DComponent otherComponent)
-        {
-            Logger.Log(thisComponent.ToString() + " begin overlap with " + otherComponent.ToString());
-        }
-        #endregion
 
         #region Controls Handling
 

@@ -27,17 +27,28 @@ namespace Pong
             Mesh = new SimplePointsMeshComponent(this, shaderSetup, points, indices);
 
             Collider = new RectangleComponent(this, width, height);
+            Collider.OnOverlapBegin += Collider_OnOverlapBegin;
         }
 
+        private void Collider_OnOverlapBegin(Physics2DComponent thisComponent, Physics2DComponent otherComponent)
+        {
+            if (otherComponent.Owner is Ball ball)
+                ball.MovementDirection = ball.Collider.Location - Collider.Location;
+        }
     }
 
     class Ball : WorldObject
     {
 
+        private Vector2 movementDirection;
+
         public CircleComponent Collider { get; }
         public SimplePointsMeshComponent Mesh { get; }
 
-        public Vector2 MovementDirection { get; set; }
+        public Vector2 MovementDirection {
+            get => movementDirection;
+            set => movementDirection = Vector2.Normalize(value);
+        }
         public float MovementSpeed { get; set; } = 250;
 
         public Ball(float radius, Color color, int segmentsAmount = 12, GameObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
