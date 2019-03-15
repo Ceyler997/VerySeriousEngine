@@ -1,7 +1,6 @@
 ﻿using SharpDX;
 using VerySeriousEngine.Components;
 using VerySeriousEngine.Core;
-using VerySeriousEngine.Utils;
 
 namespace VerySeriousEngine.Objects
 {
@@ -14,8 +13,8 @@ namespace VerySeriousEngine.Objects
         private string rightAxis;
         private string upAxis;
 
-        private string rightRotateAxis;
-        private string upRotateAxis;
+        private string turnRightAxis;
+        private string turnUpAxis;
 
         public SimpleCameraComponent CameraComponent { get; }
 
@@ -59,30 +58,30 @@ namespace VerySeriousEngine.Objects
             }
         }
 
-        public string RightRotateAxis {
-            get => rightRotateAxis;
+        public string TurnRightAxis {
+            get => turnRightAxis;
             set {
                 // unsubscribe from prev axis
                 var inputManager = Game.GameInstance.InputManager;
-                if (rightRotateAxis != null)
-                    inputManager.UnsubscribeFromAxis(rightRotateAxis, this);
+                if (turnRightAxis != null)
+                    inputManager.UnsubscribeFromAxis(turnRightAxis, this);
 
                 inputManager.SubscribeOnAxis(value, this);
 
-                rightRotateAxis = value;
+                turnRightAxis = value;
             }
         }
-        public string UpRotateAxis {
-            get => upRotateAxis;
+        public string TurnUpAxis {
+            get => turnUpAxis;
             set {
                 // unsubscribe from prev axis
                 var inputManager = Game.GameInstance.InputManager;
-                if (upRotateAxis != null)
-                    inputManager.UnsubscribeFromAxis(upRotateAxis, this);
+                if (turnUpAxis != null)
+                    inputManager.UnsubscribeFromAxis(turnUpAxis, this);
 
                 inputManager.SubscribeOnAxis(value, this);
 
-                upRotateAxis = value;
+                turnUpAxis = value;
             }
         }
 
@@ -111,10 +110,10 @@ namespace VerySeriousEngine.Objects
             if (value == 0.0f)
                 return;
 
-            if (axis == UpRotateAxis)
+            if (axis == TurnUpAxis)
                 rotationVector[0] += RotationRadSpeed * value;
 
-            if (axis == RightRotateAxis)
+            if (axis == TurnRightAxis)
                 rotationVector[1] += RotationRadSpeed * value;
 
             if (axis == ForwardAxis)
@@ -125,9 +124,6 @@ namespace VerySeriousEngine.Objects
 
             if (axis == UpAxis)
                 movementVector += Up * MovementSpeed * value;
-
-            Logger.Log(this + " got axis update: " + axis + " value " + value);
-            Logger.Log("Result movement vector: " + movementVector);
         }
     }
 }
