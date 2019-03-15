@@ -4,7 +4,7 @@ using VerySeriousEngine.Utils;
 
 namespace VerySeriousEngine.Components.Physics2D
 {
-    class CircleComponent : Physics2DComponent
+    public class CircleComponent : Physics2DComponent
     {
         private float radius;
 

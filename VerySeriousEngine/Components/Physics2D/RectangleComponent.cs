@@ -5,7 +5,7 @@ using VerySeriousEngine.Utils;
 
 namespace VerySeriousEngine.Components.Physics2D
 {
-    class RectangleComponent : Physics2DComponent
+    public class RectangleComponent : Physics2DComponent
     {
 
         public override float Radius => Convert.ToSingle(Math.Sqrt(Width * Width + Height * Height));

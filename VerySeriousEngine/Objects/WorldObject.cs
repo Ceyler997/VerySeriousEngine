@@ -11,6 +11,8 @@ namespace VerySeriousEngine.Objects
     {
         public TransformComponent TransformComponent { get; }
 
+        #region Transform Component Shortcuts
+
         public Vector3 Location {
             get => TransformComponent.Location;
             set => TransformComponent.Location = value;
@@ -55,6 +57,7 @@ namespace VerySeriousEngine.Objects
             get => TransformComponent.WorldTransform;
             set => TransformComponent.WorldTransform = value;
         }
+        #endregion
 
         public WorldObject(GameObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
         {
