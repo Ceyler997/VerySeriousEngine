@@ -26,5 +26,12 @@ namespace VerySeriousEngine.Utils
             return new Vector2((float)(Point.X * Math.Cos(Angle) - Point.Y * Math.Sin(Angle)),
                 (float)(Point.Y * Math.Cos(Angle) + Point.X * Math.Sin(Angle)));
         }
+
+        public static Vector2 MirrorPoint(Vector2 point, Vector2 axis)
+        {
+            axis.Normalize();
+            Vector2 pointProjection = Vector2.Dot(point, axis) / Vector2.Dot(axis, axis) * axis;
+            return pointProjection + (pointProjection - point);
+        }
     }
 }

@@ -1,5 +1,5 @@
-﻿using SharpDX;
-using VerySeriousEngine.Components.Physics2D;
+﻿using System;
+using SharpDX;
 using VerySeriousEngine.Core;
 using VerySeriousEngine.Utils;
 
@@ -8,8 +8,7 @@ namespace Pong
     class PongPlayerController : GameObject, IActionListener, IAxisListener
     {
         #region Private Fields
-
-        private Platform controlledPlatform;
+        
         private string exitAction;
         private string upAxis;
         private Vector2 movingDirection;
@@ -18,18 +17,9 @@ namespace Pong
 
         #region Public Properties
 
-        public Platform ControlledPlatform {
-            get => controlledPlatform;
-            set {
-                if (controlledPlatform == value)
-                    return;
+        public Platform ControlledPlatform { get; }
 
-                var fieldBounds = FieldBounds;
-                controlledPlatform = value;
-                // update field bounds to make it match to new platform
-                FieldBounds = fieldBounds;
-            }
-        }
+        public GameField Field { get; }
 
         public string ExitAction {
             get => exitAction;
@@ -76,23 +66,36 @@ namespace Pong
         public Vector2 FieldBounds {
             get {
                 var result = bounds;
-                if (controlledPlatform != null)
-                    result += new Vector2(controlledPlatform.Collider.Width / 2, controlledPlatform.Collider.Height / 2);
+                if (ControlledPlatform != null)
+                    result += new Vector2(ControlledPlatform.Collider.Width / 2, ControlledPlatform.Collider.Height / 2);
 
                 return result;
             }
             set {
                 bounds = value/2;
-                if (controlledPlatform != null)
-                    bounds -= new Vector2(controlledPlatform.Collider.Width / 2, controlledPlatform.Collider.Height / 2);
+                if (ControlledPlatform != null)
+                    bounds -= new Vector2(ControlledPlatform.Collider.Width / 2, ControlledPlatform.Collider.Height / 2);
             }
         }
+
+        public Vector3 PlatformStartPosition { get; set; }
         #endregion
 
-        public PongPlayerController(Platform controlledPlatform, string objectName = null, bool isActiveAtStart = true) : base(null, objectName, isActiveAtStart)
+        public PongPlayerController(GameField gameField, string objectName = null, bool isActiveAtStart = true) : base(null, objectName, isActiveAtStart)
         {
-            ControlledPlatform = controlledPlatform;
-            FieldBounds = new Vector2(800, 600);
+            Field = gameField ?? throw new ArgumentNullException(nameof(gameField));
+            gameField.Goal += GameField_Goal;
+            PlatformStartPosition = Vector3.Right * (Field.FieldWidth/2 - 100);
+            ControlledPlatform = new Platform(20, 100, Color.Blue, objectName: "Player Platform")
+            {
+                WorldLocation = PlatformStartPosition,
+            };
+            FieldBounds = new Vector2(Field.FieldWidth, Field.FieldHeight);
+        }
+
+        private void GameField_Goal(ESide lostSide)
+        {
+            ControlledPlatform.WorldLocation = PlatformStartPosition;
         }
 
         public override void Update(float frameTime)

@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameField.cs" />
     <Compile Include="GameObjects.cs" />
     <Compile Include="PlayerController.cs" />
     <Compile Include="PongGame.cs" />

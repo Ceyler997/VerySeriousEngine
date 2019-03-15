@@ -1,11 +1,9 @@
 using System;
 using System.Windows.Forms;
 using SharpDX;
-using VerySeriousEngine.Components;
 using VerySeriousEngine.Core;
 using VerySeriousEngine.Input;
 using VerySeriousEngine.Objects;
-using VerySeriousEngine.Utils;
 
 namespace Pong
 {
@@ -13,31 +11,34 @@ namespace Pong
     {
         static void Main(string[] args)
         {
-            var pong = Game.CreateGame("Pong", 800, 600, true);
+            var gameWidth = 800;
+            var gameHeight = 600;
+
+            var pong = Game.CreateGame("Pong", gameWidth, gameHeight, true);
             var world = new World("Pong World");
             pong.CurrentWorld = world;
 
             SetupInput(pong.InputManager);
 
-            var camera = new SimpleControllableCamera(objectName: "Camera");
+            var camera = new SimpleControllableCamera(objectName: "Camera")
+            {
+                Location = Vector3.BackwardRH * 100,
+            };
             camera.CameraComponent.IsPerspective = false;
-            camera.CameraComponent.OrthoWidth = 800;
-            camera.CameraComponent.OrthoHeight = 600;
+            camera.CameraComponent.OrthoWidth = gameWidth;
+            camera.CameraComponent.OrthoHeight = gameHeight;
+
+            var gameField = new GameField(gameWidth, gameHeight);
 
             var platformLeft = new Platform(20, 100, Color.Red, objectName: "Left Platform")
             {
-                WorldLocation = new Vector3(-350, 0, -100),
-            };
-            var platformRight = new Platform(20, 100, Color.Blue, objectName: "Right Platform")
-            {
-                WorldLocation = new Vector3(350, 0, -100),
+                Location = new Vector3(-350, 0, 0),
             };
             var ball = new Ball(10, Color.White, 16)
             {
-                WorldLocation = new Vector3(0, 0, -100),
                 MovementDirection = Vector2.UnitX,
             };
-            var controller = new PongPlayerController(platformRight)
+            var controller = new PongPlayerController(gameField)
             {
                 ExitAction = "Exit",
                 UpAxis = "Up",
