@@ -14,7 +14,7 @@ namespace TestProject
             var gameWidth = 800;
             var gameHeight = 600;
 
-            var SolarSystemGame = Game.CreateGame("Test", gameWidth, gameHeight, true);
+            var SolarSystemGame = Game.CreateGame("Space", gameWidth, gameHeight, true);
             SolarSystemGame.CurrentWorld = new World("Solar System");
 
             SetupInput(SolarSystemGame.InputManager);
@@ -29,7 +29,37 @@ namespace TestProject
                 WorldLocation = Vector3.BackwardRH * 150,
             };
 
-            new Planet();
+            var Center = new WorldObject();
+            var Sun = new Planet(0, Center, "Sun")
+            {
+                PlanetSize = 5,
+                RotationAngularSpeed = 0.0f,
+                TurningAngularSpeed = 1.0f,
+            };
+            var Mercury = new Planet(400, Center, "Mercury")
+            {
+                PlanetSize = 0.3f,
+                RotationAngularSpeed = 5.0f,
+                TurningAngularSpeed = 2.0f,
+            };
+            var Venus = new Planet(700, Center, "Venus")
+            {
+                PlanetSize = 0.9f,
+                RotationAngularSpeed = 3.0f,
+                TurningAngularSpeed = -1.0f,
+            };
+            var Earth = new Planet(1000, Center, "Earth")
+            {
+                PlanetSize = 1.0f,
+                RotationAngularSpeed = 1.0f,
+                TurningAngularSpeed = 1.0f,
+            };
+            var Mars = new Planet(1500, Center, "Mars")
+            {
+                PlanetSize = 0.5f,
+                RotationAngularSpeed = 1.0f,
+                TurningAngularSpeed = 0.8f,
+            };
 
             SolarSystemGame.StartGame();
             SolarSystemGame.Dispose();

@@ -10,7 +10,10 @@ namespace TestProject
     {
         private class PlanetObject : WorldObject
         {
-            SimplePointsMeshComponent PlanetMesh { get; }
+            public float RotationSpeed { get; set; }
+            public Vector3 RotationAxis { get; set; } = Vector3.Up;
+
+            private readonly SimplePointsMeshComponent planetMesh;
 
             public PlanetObject(Planet parentPlanet, string objectName = null, bool isActiveAtStart = true) : base(parentPlanet, objectName, isActiveAtStart)
             {
@@ -38,13 +41,49 @@ namespace TestProject
                     0, 1, 4, 5, 1, 4,
                     2, 3, 6, 7, 3, 6,
                 };
-                PlanetMesh = new SimplePointsMeshComponent(this, shaderSetup, points, indices);
+                planetMesh = new SimplePointsMeshComponent(this, shaderSetup, points, indices);
+            }
+
+            public override void Update(float frameTime)
+            {
+                Rotation *= Quaternion.RotationAxis(RotationAxis, frameTime * RotationSpeed);
             }
         }
 
-        public Planet(WorldObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
+        private float planetSize = 1.0f;
+
+        // General scale
+        public float PlanetSize {
+            get => planetSize;
+            set {
+                planetSize = value;
+                PlanetMesh.Scale = new Vector3(value);
+            }
+        }
+
+        // How fast planet is rotating around world axis
+        public float RotationAngularSpeed { get; set; }
+
+        // How fast planet is rotating around it's own axis
+        public float TurningAngularSpeed {
+            get => PlanetMesh.RotationSpeed;
+            set => PlanetMesh.RotationSpeed = value;
+        }
+        public Vector3 PlanetTurningAxis {
+            get => PlanetMesh.RotationAxis;
+            set => PlanetMesh.RotationAxis = value;
+        }
+        private PlanetObject PlanetMesh { get; }
+
+        public Planet(float distanceFromCenter, WorldObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
         {
-            new PlanetObject(this);
+            PlanetMesh = new PlanetObject(this);
+            PlanetMesh.Location = Vector3.ForwardRH * distanceFromCenter;
+        }
+
+        public override void Update(float frameTime)
+        {
+            Rotation *= Quaternion.RotationAxis(Vector3.Up, frameTime * RotationAngularSpeed);
         }
     }
 }
