@@ -112,17 +112,23 @@ namespace VerySeriousEngine.Core
             if (renderable == null)
                 return;
 
-            Context.InputAssembler.InputLayout = renderable.InputLayout;
-            Context.InputAssembler.SetIndexBuffer(renderable.IndexBuffer, Format.R32_UInt, 0);
-            Context.InputAssembler.SetVertexBuffers(0, renderable.VertexBufferBinding);
+            if (renderable.IsRendered == false)
+                return;
 
-            Context.UpdateSubresource(ref WVP, worldTransformMatrixBuffer);
-            Context.VertexShader.SetConstantBuffer(0, worldTransformMatrixBuffer);
+            foreach(var piece in renderable.Geometry)
+            {
+                Context.InputAssembler.InputLayout = piece.ShaderSetup.InputLayout;
+                Context.VertexShader.Set(piece.ShaderSetup.VertexShader);
+                Context.PixelShader.Set(piece.ShaderSetup.PixelShader);
 
-            Context.VertexShader.Set(renderable.VertexShader);
-            Context.PixelShader.Set(renderable.PixelShader);
+                Context.InputAssembler.SetIndexBuffer(piece.BufferSetup.IndexBuffer, Format.R32_UInt, 0);
+                Context.InputAssembler.SetVertexBuffers(0, piece.BufferSetup.VertexBufferBinding);
 
-            Context.DrawIndexed(renderable.IndexCount, 0, 0);
+                Context.UpdateSubresource(ref WVP, worldTransformMatrixBuffer);
+                Context.VertexShader.SetConstantBuffer(0, worldTransformMatrixBuffer);
+
+                Context.DrawIndexed(piece.BufferSetup.IndexCount, 0, 0);
+            }
         }
 
         public void FinishFrame()

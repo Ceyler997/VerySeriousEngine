@@ -1,5 +1,6 @@
 ﻿using SharpDX;
-using SharpDX.Direct3D11;
+using System.Collections.Generic;
+using VerySeriousEngine.Utils;
 
 namespace VerySeriousEngine.Interfaces
 {
@@ -9,12 +10,7 @@ namespace VerySeriousEngine.Interfaces
     public interface IRenderable
     {
         bool IsRendered { get; }
-        InputLayout InputLayout { get; }
-        Buffer IndexBuffer { get; }
-        VertexBufferBinding VertexBufferBinding { get; }
-        VertexShader VertexShader { get; }
-        PixelShader PixelShader { get; }
-        int IndexCount { get; }
+        IEnumerable<GeometrySetup> Geometry { get; }
         Matrix WorldMatrix { get; }
     }
 }

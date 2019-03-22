@@ -91,7 +91,7 @@
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\Points.cs" />
     <Compile Include="Core\Renderer.cs" />
-    <Compile Include="Utils\ShaderSetup.cs" />
+    <Compile Include="Utils\SetupStructures.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
