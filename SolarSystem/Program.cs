@@ -1,3 +1,4 @@
+using SharpDX;
 using System;
 using System.Windows.Forms;
 using VerySeriousEngine.Core;
@@ -13,10 +14,10 @@ namespace TestProject
             var gameWidth = 800;
             var gameHeight = 600;
 
-            var playground = Game.CreateGame("Test", gameWidth, gameHeight, true);
-            playground.CurrentWorld = new World("Trashcan");
+            var SolarSystemGame = Game.CreateGame("Test", gameWidth, gameHeight, true);
+            SolarSystemGame.CurrentWorld = new World("Solar System");
 
-            SetupInput(playground.InputManager);
+            SetupInput(SolarSystemGame.InputManager);
 
             var camera = new SimpleControllableCamera(objectName: "Camera")
             {
@@ -24,10 +25,13 @@ namespace TestProject
                 RightAxis = "Right",
                 TurnRightAxis = "Turn Right",
                 TurnUpAxis = "Turn Up",
+                WorldLocation = Vector3.BackwardRH * 150,
             };
 
-            playground.StartGame();
-            playground.Dispose();
+            new Planet();
+
+            SolarSystemGame.StartGame();
+            SolarSystemGame.Dispose();
             Console.WriteLine();
             Console.WriteLine("Game finished. Press Enter.");
             Console.ReadLine();
@@ -38,9 +42,6 @@ namespace TestProject
             var exitAction = new KeyboardInput(Keys.Escape);
             inputManager.AddAction(exitAction, "Exit");
             inputManager.SubscribeOnAction("Exit", new ExitObject());
-
-            var testAction = new KeyboardInput(Keys.E);
-            inputManager.AddAction(testAction, "Action");
 
             var forward = new KeyboardInput(Keys.W);
             var backward = new KeyboardInput(Keys.S, -1);

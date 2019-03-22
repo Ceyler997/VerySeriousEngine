@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VerySeriousEngine", "VerySe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pong", "Pong\Pong.csproj", "{E6FC5B4F-2C4E-401B-9720-369634A56701}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{7C9D3340-CF4A-497C-A133-F6E00A577217}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolarSystem", "SolarSystem\SolarSystem.csproj", "{7C9D3340-CF4A-497C-A133-F6E00A577217}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
