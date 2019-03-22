@@ -15,7 +15,7 @@ namespace Pong
 
         public Platform(float width, float height, Color color, GameObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
         {
-            var shaderSetup = new ShaderSetup("Shader.hlsl", SimplePoint.InputElements);
+            var shaderSetup = new ShaderSetup("Shaders/VertexColorShader.hlsl", SimplePoint.InputElements);
             var indices = new int[] { 0, 1, 2, 1, 2, 3 };
             var points = new SimplePoint[]
             {
@@ -53,7 +53,7 @@ namespace Pong
 
         public Ball(float radius, Color color, int segmentsAmount = 12, GameObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
         {
-            var shaderSetup = new ShaderSetup("Shader.hlsl", SimplePoint.InputElements);
+            var shaderSetup = new ShaderSetup("Shaders/VertexColorShader.hlsl", SimplePoint.InputElements);
 
             var points = new SimplePoint[segmentsAmount + 1];
             points[0] = new SimplePoint() { Location = new Vector4(Vector3.Zero, 1.0f), Color = color.ToVector4() };
