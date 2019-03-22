@@ -23,6 +23,7 @@ namespace TestProject
             {
                 ForwardAxis = "Forward",
                 RightAxis = "Right",
+                UpAxis = "Up",
                 TurnRightAxis = "Turn Right",
                 TurnUpAxis = "Turn Up",
                 WorldLocation = Vector3.BackwardRH * 150,
@@ -51,13 +52,17 @@ namespace TestProject
             var left = new KeyboardInput(Keys.A, -1);
             inputManager.AddAxes(new[] { right, left }, "Right");
 
+            var up = new KeyboardInput(Keys.E);
+            var down = new KeyboardInput(Keys.Q, -1);
+            inputManager.AddAxes(new[] { up, down }, "Up");
+
             var turnUp = new KeyboardInput(Keys.Up);
             var turnDown = new KeyboardInput(Keys.Down, -1);
             inputManager.AddAxes(new[] { turnUp, turnDown }, "Turn Up");
 
             var turnRight = new KeyboardInput(Keys.Right);
             var turnLeft = new KeyboardInput(Keys.Left, -1);
-            inputManager.AddAxes(new[] { turnRight, turnLeft}, "Turn Right");
+            inputManager.AddAxes(new[] { turnRight, turnLeft }, "Turn Right");
         }
     }
 
