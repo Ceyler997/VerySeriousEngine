@@ -19,10 +19,10 @@ namespace Pong
             var indices = new int[] { 0, 1, 2, 1, 2, 3 };
             var points = new SimplePoint[]
             {
-                new SimplePoint { Location = new Vector4(-width/2,  height/2, .0f, 1.0f), Color = color.ToVector4() }, // upper left
-                new SimplePoint { Location = new Vector4( width/2,  height/2, .0f, 1.0f), Color = color.ToVector4() }, // upper right
-                new SimplePoint { Location = new Vector4(-width/2, -height/2, .0f, 1.0f), Color = color.ToVector4() }, // lower left
-                new SimplePoint { Location = new Vector4( width/2, -height/2, .0f, 1.0f), Color = color.ToVector4() }, // lower right
+                new SimplePoint(new Vector4(-width/2,  height/2, .0f, 1.0f), color), // upper left
+                new SimplePoint(new Vector4( width/2,  height/2, .0f, 1.0f), color), // upper right
+                new SimplePoint(new Vector4(-width/2, -height/2, .0f, 1.0f), color), // lower left
+                new SimplePoint(new Vector4( width/2, -height/2, .0f, 1.0f), color), // lower right
             };
             Mesh = new SimplePointsMeshComponent(this, shaderSetup, points, indices);
 
@@ -56,14 +56,14 @@ namespace Pong
             var shaderSetup = new ShaderSetup("Shaders/VertexColorShader.hlsl", SimplePoint.InputElements);
 
             var points = new SimplePoint[segmentsAmount + 1];
-            points[0] = new SimplePoint() { Location = new Vector4(Vector3.Zero, 1.0f), Color = color.ToVector4() };
+            points[0] = new SimplePoint(new Vector4(Vector3.Zero, 1.0f), color);
             foreach (int segment in Enumerable.Range(0, segmentsAmount))
             {
                 Vector2 screenLocation = VSEMath.RotatePointOnAngle(new Vector2(.0f, radius), MathUtil.TwoPi / segmentsAmount * segment); //turn up vector on corresponding angle
 
                 Vector4 pointLocation = new Vector4(screenLocation, .0f, 1.0f);
 
-                points[segment + 1] = new SimplePoint() { Location = pointLocation, Color = color.ToVector4() };
+                points[segment + 1] = new SimplePoint(pointLocation, color);
             }
 
             var indices = new int[segmentsAmount * 3];
