@@ -14,10 +14,10 @@ namespace TestProject
             var gameWidth = 800;
             var gameHeight = 600;
 
-            var SolarSystemGame = Game.CreateGame("Space", gameWidth, gameHeight, true);
-            SolarSystemGame.CurrentWorld = new World("Solar System");
+            var solarSystemGame = Game.CreateGame("Space", gameWidth, gameHeight, true);
+            solarSystemGame.CurrentWorld = new World("Solar System");
 
-            SetupInput(SolarSystemGame.InputManager);
+            SetupInput(solarSystemGame.InputManager);
 
             var camera = new SimpleControllableCamera(objectName: "Camera")
             {
@@ -26,43 +26,44 @@ namespace TestProject
                 UpAxis = "Up",
                 TurnRightAxis = "Turn Right",
                 TurnUpAxis = "Turn Up",
-                WorldLocation = Vector3.BackwardRH * 150,
+                WorldLocation = new Vector3(200, 1000, 2000),
+                WorldRotation =  Quaternion.Invert(Quaternion.LookAtRH(new Vector3(200, 1000, 2000), Vector3.Zero, Vector3.Up)),
             };
 
-            var Center = new WorldObject();
-            var Sun = new Planet(0, Center, "Sun")
+            var center = new WorldObject();
+            var Sun = new Planet(0, center, "Sun")
             {
                 PlanetSize = 5,
                 RotationAngularSpeed = 0.0f,
                 TurningAngularSpeed = 1.0f,
             };
-            var Mercury = new Planet(400, Center, "Mercury")
+            var mercury = new Planet(400, center, "Mercury")
             {
                 PlanetSize = 0.3f,
                 RotationAngularSpeed = 5.0f,
                 TurningAngularSpeed = 2.0f,
             };
-            var Venus = new Planet(700, Center, "Venus")
+            var venus = new Planet(700, center, "Venus")
             {
                 PlanetSize = 0.9f,
                 RotationAngularSpeed = 3.0f,
                 TurningAngularSpeed = -1.0f,
             };
-            var Earth = new Planet(1000, Center, "Earth")
+            var earth = new Planet(1000, center, "Earth")
             {
                 PlanetSize = 1.0f,
                 RotationAngularSpeed = 1.0f,
                 TurningAngularSpeed = 1.0f,
             };
-            var Mars = new Planet(1500, Center, "Mars")
+            var mars = new Planet(1500, center, "Mars")
             {
                 PlanetSize = 0.5f,
                 RotationAngularSpeed = 1.0f,
                 TurningAngularSpeed = 0.8f,
             };
 
-            SolarSystemGame.StartGame();
-            SolarSystemGame.Dispose();
+            solarSystemGame.StartGame();
+            solarSystemGame.Dispose();
             Console.WriteLine();
             Console.WriteLine("Game finished. Press Enter.");
             Console.ReadLine();
