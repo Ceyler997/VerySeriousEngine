@@ -1,5 +1,6 @@
 ﻿using SharpDX.Direct3D11;
 using VerySeriousEngine.Core;
+using VerySeriousEngine.Geometry;
 
 namespace VerySeriousEngine.Utils
 {
@@ -26,6 +27,15 @@ namespace VerySeriousEngine.Utils
             VertexShader = vertexShader;
             InputLayout = inputLayout;
             PixelShader = pixelShader;
+        }
+
+        public ShaderSetup(string shaderFileName, string vertexShaderEntryPoint = "VSMain", string pixelShaderEntryPoint = "PSMain")
+        {
+            var constructor = Game.GameInstance.GameConstructor;
+            var vertexShaderCompileResult = constructor.CompileVertexShader(shaderFileName, vertexShaderEntryPoint, Vertex.InputElements);
+            VertexShader = vertexShaderCompileResult.Item1;
+            InputLayout = vertexShaderCompileResult.Item2;
+            PixelShader = constructor.CompilePixelShader(shaderFileName, pixelShaderEntryPoint);
         }
 
         public ShaderSetup(string shaderFileName, InputElement[] inputElements, string vertexShaderEntryPoint = "VSMain", string pixelShaderEntryPoint = "PSMain")
