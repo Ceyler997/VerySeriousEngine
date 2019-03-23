@@ -71,6 +71,7 @@
     <Compile Include="Components\Physics2D\RectangleColliderComponent.cs" />
     <Compile Include="Components\SimplePointsMeshComponent.cs" />
     <Compile Include="Components\SimpleCameraComponent.cs" />
+    <Compile Include="Components\StaticMeshComponent.cs" />
     <Compile Include="Components\TransformComponent.cs" />
     <Compile Include="Core\Game.cs" />
     <Compile Include="Core\GameComponent.cs" />
@@ -80,6 +81,8 @@
     <Compile Include="Core\PointOfView.cs" />
     <Compile Include="Core\TimeManager.cs" />
     <Compile Include="Core\World.cs" />
+    <Compile Include="Geometry\StaticMesh.cs" />
+    <Compile Include="Utils\Import\MeshImporter.cs" />
     <Compile Include="Utils\Math.cs" />
     <Compile Include="Input\KeyboardInput.cs" />
     <Compile Include="Input\MouseInput.cs" />
@@ -89,6 +92,7 @@
     <Compile Include="Utils\Constructor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Logger.cs" />
+    <Compile Include="Utils\Import\ObjFileImporter.cs" />
     <Compile Include="Core\Renderer.cs" />
     <Compile Include="Utils\SetupStructures.cs" />
   </ItemGroup>
