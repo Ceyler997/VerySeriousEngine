@@ -3,6 +3,7 @@ using SharpDX.Direct3D11;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using VerySeriousEngine.Core;
+using VerySeriousEngine.Geometry;
 using VerySeriousEngine.Interfaces;
 using VerySeriousEngine.Objects;
 using VerySeriousEngine.Utils;
@@ -13,9 +14,9 @@ namespace VerySeriousEngine.Components
     {
         private WorldObject worldOwner;
 
-        private GeometrySetup[] setup;
+        private readonly GeometrySetup[] setup;
 
-        public SimplePointsMeshComponent(WorldObject owner, ShaderSetup shaderSetup, SimplePoint[] points, int[] indices, string componentName = null, bool isActiveAtStart = true) : base(owner, componentName, isActiveAtStart)
+        public SimplePointsMeshComponent(WorldObject owner, ShaderSetup shaderSetup, Vertex[] points, int[] indices, string componentName = null, bool isActiveAtStart = true) : base(owner, componentName, isActiveAtStart)
         {
             worldOwner = owner;
             var constructor = Game.GameInstance.GameConstructor;
@@ -24,7 +25,7 @@ namespace VerySeriousEngine.Components
             var indexCount = indices.Length;
 
             var vertexBuffer = constructor.CreateBuffer(points, BindFlags.VertexBuffer);
-            var vertexBufferBinding = new VertexBufferBinding(vertexBuffer, Marshal.SizeOf<SimplePoint>(), 0);
+            var vertexBufferBinding = new VertexBufferBinding(vertexBuffer, Marshal.SizeOf<Vertex>(), 0);
             BufferSetup geometrySetup = new BufferSetup(indexBuffer, vertexBufferBinding, indexCount);
 
             setup = new GeometrySetup[]

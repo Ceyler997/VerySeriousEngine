@@ -2,8 +2,10 @@ using SharpDX;
 using System;
 using System.Windows.Forms;
 using VerySeriousEngine.Core;
+using VerySeriousEngine.Geometry;
 using VerySeriousEngine.Input;
 using VerySeriousEngine.Objects;
+using VerySeriousEngine.Utils;
 
 namespace TestProject
 {
@@ -15,6 +17,11 @@ namespace TestProject
             var gameHeight = 600;
 
             var solarSystemGame = Game.CreateGame("Space", gameWidth, gameHeight, true);
+
+            var testModel = MeshImporter.ImportModelFromFile("Models/Earth/Earth.obj");
+            var planet = testModel[0];
+            planet.Shader = new ShaderSetup("Shaders/VertexColorShader.hlsl");
+
             solarSystemGame.CurrentWorld = new World("Solar System");
 
             SetupInput(solarSystemGame.InputManager);
@@ -27,7 +34,7 @@ namespace TestProject
                 TurnRightAxis = "Turn Right",
                 TurnUpAxis = "Turn Up",
                 WorldLocation = new Vector3(200, 1000, 2000),
-                WorldRotation =  Quaternion.Invert(Quaternion.LookAtRH(new Vector3(200, 1000, 2000), Vector3.Zero, Vector3.Up)),
+                WorldRotation = Quaternion.Invert(Quaternion.LookAtRH(new Vector3(200, 1000, 2000), Vector3.Zero, Vector3.Up)),
             };
 
             var center = new WorldObject();

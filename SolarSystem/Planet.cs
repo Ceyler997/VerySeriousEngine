@@ -1,6 +1,7 @@
 ﻿using System;
 using SharpDX;
 using VerySeriousEngine.Components;
+using VerySeriousEngine.Geometry;
 using VerySeriousEngine.Objects;
 using VerySeriousEngine.Utils;
 
@@ -13,35 +14,17 @@ namespace TestProject
             public float RotationSpeed { get; set; }
             public Vector3 RotationAxis { get; set; } = Vector3.Up;
 
-            private readonly SimplePointsMeshComponent planetMesh;
+            private readonly StaticMeshComponent planetMesh;
 
-            public PlanetObject(Planet parentPlanet, string objectName = null, bool isActiveAtStart = true) : base(parentPlanet, objectName, isActiveAtStart)
+            public PlanetObject(Planet parentPlanet, StaticMesh mesh, string objectName = null, bool isActiveAtStart = true) : base(parentPlanet, objectName, isActiveAtStart)
             {
                 if (parentPlanet == null)
                     throw new ArgumentNullException(nameof(parentPlanet));
 
-                ShaderSetup shaderSetup = new ShaderSetup("Shaders/VertexColorShader.hlsl", SimplePoint.InputElements);
-                var points = new SimplePoint[]
+                planetMesh = new StaticMeshComponent(this)
                 {
-                    new SimplePoint(new Vector4( 50.0f,  50.0f,  50.0f, 1.0f), new Color(1.0f, 1.0f, 1.0f, 1.0f)),
-                    new SimplePoint(new Vector4(-50.0f,  50.0f,  50.0f, 1.0f), new Color(0.0f, 1.0f, 1.0f, 1.0f)),
-                    new SimplePoint(new Vector4( 50.0f, -50.0f,  50.0f, 1.0f), new Color(1.0f, 0.0f, 1.0f, 1.0f)),
-                    new SimplePoint(new Vector4(-50.0f, -50.0f,  50.0f, 1.0f), new Color(0.0f, 0.0f, 1.0f, 1.0f)),
-                    new SimplePoint(new Vector4( 50.0f,  50.0f, -50.0f, 1.0f), new Color(1.0f, 1.0f, 0.0f, 1.0f)),
-                    new SimplePoint(new Vector4(-50.0f,  50.0f, -50.0f, 1.0f), new Color(0.0f, 1.0f, 0.0f, 1.0f)),
-                    new SimplePoint(new Vector4( 50.0f, -50.0f, -50.0f, 1.0f), new Color(1.0f, 0.0f, 0.0f, 1.0f)),
-                    new SimplePoint(new Vector4(-50.0f, -50.0f, -50.0f, 1.0f), new Color(0.0f, 0.0f, 0.0f, 1.0f)),
+                    Mesh = mesh,
                 };
-                var indices = new int[]
-                {
-                    0, 1, 2, 3, 1, 2,
-                    1, 3, 5, 7, 3, 5,
-                    5, 4, 7, 6, 4, 7,
-                    4, 0, 6, 2, 0, 6,
-                    0, 1, 4, 5, 1, 4,
-                    2, 3, 6, 7, 3, 6,
-                };
-                planetMesh = new SimplePointsMeshComponent(this, shaderSetup, points, indices);
             }
 
             public override void Update(float frameTime)
@@ -75,10 +58,12 @@ namespace TestProject
         }
         private PlanetObject PlanetMesh { get; }
 
-        public Planet(float distanceFromCenter, WorldObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
+        public Planet(float distanceFromCenter, StaticMesh mesh, WorldObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
         {
-            PlanetMesh = new PlanetObject(this);
-            PlanetMesh.Location = Vector3.ForwardRH * distanceFromCenter;
+            PlanetMesh = new PlanetObject(this, mesh)
+            {
+                Location = Vector3.ForwardRH * distanceFromCenter
+            };
         }
 
         public override void Update(float frameTime)

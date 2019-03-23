@@ -3,6 +3,7 @@ using System.Linq;
 using VerySeriousEngine.Components;
 using VerySeriousEngine.Components.Physics2D;
 using VerySeriousEngine.Core;
+using VerySeriousEngine.Geometry;
 using VerySeriousEngine.Objects;
 using VerySeriousEngine.Utils;
 
@@ -15,14 +16,14 @@ namespace Pong
 
         public Platform(float width, float height, Color color, GameObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
         {
-            var shaderSetup = new ShaderSetup("Shaders/VertexColorShader.hlsl", SimplePoint.InputElements);
+            var shaderSetup = new ShaderSetup("Shaders/VertexColorShader.hlsl", Vertex.InputElements);
             var indices = new int[] { 0, 1, 2, 1, 2, 3 };
-            var points = new SimplePoint[]
+            var points = new Vertex[]
             {
-                new SimplePoint(new Vector4(-width/2,  height/2, .0f, 1.0f), color), // upper left
-                new SimplePoint(new Vector4( width/2,  height/2, .0f, 1.0f), color), // upper right
-                new SimplePoint(new Vector4(-width/2, -height/2, .0f, 1.0f), color), // lower left
-                new SimplePoint(new Vector4( width/2, -height/2, .0f, 1.0f), color), // lower right
+                new Vertex(){Location = new Vector3(-width/2,  height/2, .0f), Color = color.ToVector4() }, // upper left
+                new Vertex(){Location = new Vector3( width/2,  height/2, .0f), Color = color.ToVector4() }, // upper right
+                new Vertex(){Location = new Vector3(-width/2, -height/2, .0f), Color = color.ToVector4() }, // lower left
+                new Vertex(){Location = new Vector3( width/2, -height/2, .0f), Color = color.ToVector4() }, // lower right
             };
             Mesh = new SimplePointsMeshComponent(this, shaderSetup, points, indices);
 
@@ -53,17 +54,25 @@ namespace Pong
 
         public Ball(float radius, Color color, int segmentsAmount = 12, GameObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
         {
-            var shaderSetup = new ShaderSetup("Shaders/VertexColorShader.hlsl", SimplePoint.InputElements);
+            var shaderSetup = new ShaderSetup("Shaders/VertexColorShader.hlsl", Vertex.InputElements);
 
-            var points = new SimplePoint[segmentsAmount + 1];
-            points[0] = new SimplePoint(new Vector4(Vector3.Zero, 1.0f), color);
+            var points = new Vertex[segmentsAmount + 1];
+            points[0] = new Vertex()
+            {
+                Location = Vector3.Zero,
+                Color = color.ToVector4()
+            };
             foreach (int segment in Enumerable.Range(0, segmentsAmount))
             {
-                Vector2 screenLocation = VSEMath.RotatePointOnAngle(new Vector2(.0f, radius), MathUtil.TwoPi / segmentsAmount * segment); //turn up vector on corresponding angle
+                var screenLocation = VSEMath.RotatePointOnAngle(new Vector2(.0f, radius), MathUtil.TwoPi / segmentsAmount * segment); //turn up vector on corresponding angle
 
-                Vector4 pointLocation = new Vector4(screenLocation, .0f, 1.0f);
+                var pointLocation = new Vector3(screenLocation, .0f);
 
-                points[segment + 1] = new SimplePoint(pointLocation, color);
+                points[segment + 1] = new Vertex()
+                {
+                    Location = pointLocation,
+                    Color = color.ToVector4(),
+                };
             }
 
             var indices = new int[segmentsAmount * 3];

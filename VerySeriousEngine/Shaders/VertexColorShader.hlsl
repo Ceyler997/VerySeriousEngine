@@ -6,12 +6,16 @@ cbuffer ShaderData : register(b0)
 struct VS_IN
 {
     float4 position : POSITION;
+    float3 normal   : NORMAL;
+    float2 texcoord : TEXCOORD;
     float4 color	: COLOR;
 };
 
 struct PS_IN
 {
     float4 position : SV_POSITION;
+    float3 normal : NORMAL;
+    float2 texcoord : TEXCOORD;
     float4 color	: COLOR;
 };
 
