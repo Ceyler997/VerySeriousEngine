@@ -40,7 +40,7 @@ namespace TestProject
             get => planetSize;
             set {
                 planetSize = value;
-                PlanetMesh.Scale = new Vector3(value);
+                PlanetMesh.WorldScale = new Vector3(value);
             }
         }
 
@@ -57,6 +57,7 @@ namespace TestProject
             set => PlanetMesh.RotationAxis = value;
         }
         private PlanetObject PlanetMesh { get; }
+        public WorldObject PlanetCenter { get => PlanetMesh; }
 
         public Planet(float distanceFromCenter, StaticMesh mesh, WorldObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
         {

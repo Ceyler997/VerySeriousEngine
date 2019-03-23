@@ -38,33 +38,39 @@ namespace TestProject
             };
 
             var center = new WorldObject();
-            var Sun = new Planet(0, center, "Sun")
+            var Sun = new Planet(0, planet, center, "Sun")
             {
-                PlanetSize = 5,
+                PlanetSize = 100,
                 RotationAngularSpeed = 0.0f,
                 TurningAngularSpeed = 1.0f,
             };
-            var mercury = new Planet(400, center, "Mercury")
+            var mercury = new Planet(400, planet, center, "Mercury")
             {
-                PlanetSize = 0.3f,
+                PlanetSize = 3,
                 RotationAngularSpeed = 5.0f,
                 TurningAngularSpeed = 2.0f,
             };
-            var venus = new Planet(700, center, "Venus")
+            var venus = new Planet(700, planet, center, "Venus")
             {
-                PlanetSize = 0.9f,
+                PlanetSize = 9,
                 RotationAngularSpeed = 3.0f,
                 TurningAngularSpeed = -1.0f,
             };
-            var earth = new Planet(1000, center, "Earth")
+            var earth = new Planet(1000, planet, center, "Earth")
             {
-                PlanetSize = 1.0f,
+                PlanetSize = 10,
                 RotationAngularSpeed = 1.0f,
                 TurningAngularSpeed = 1.0f,
             };
-            var mars = new Planet(1500, center, "Mars")
+            var moon = new Planet(10, planet, earth.PlanetCenter, "Moon")
             {
-                PlanetSize = 0.5f,
+                PlanetSize = 2,
+                RotationAngularSpeed = 2.0f,
+                TurningAngularSpeed = 1.0f,
+            };
+            var mars = new Planet(1500, planet, center, "Mars")
+            {
+                PlanetSize = 5f,
                 RotationAngularSpeed = 1.0f,
                 TurningAngularSpeed = 0.8f,
             };
