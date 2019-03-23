@@ -8,6 +8,7 @@ using VerySeriousEngine.Interfaces;
 
 using Device = SharpDX.Direct3D11.Device;
 using Buffer = SharpDX.Direct3D11.Buffer;
+using VerySeriousEngine.Utils;
 
 namespace VerySeriousEngine.Core
 {
@@ -117,6 +118,24 @@ namespace VerySeriousEngine.Core
 
             foreach(var piece in renderable.Geometry)
             {
+                if (piece == null)
+                {
+                    Logger.LogError("Trying to render object without setup");
+                    continue;
+                }
+
+                if (piece.ShaderSetup == null)
+                {
+                    Logger.LogError("Trying to render object without shaders");
+                    continue;
+                }
+
+                if (piece.BufferSetup == null)
+                {
+                    Logger.LogError("Trying to render object without geometry");
+                    continue;
+                }
+
                 Context.InputAssembler.InputLayout = piece.ShaderSetup.InputLayout;
                 Context.VertexShader.Set(piece.ShaderSetup.VertexShader);
                 Context.PixelShader.Set(piece.ShaderSetup.PixelShader);

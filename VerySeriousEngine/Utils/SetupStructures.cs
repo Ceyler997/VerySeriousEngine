@@ -3,7 +3,7 @@ using VerySeriousEngine.Core;
 
 namespace VerySeriousEngine.Utils
 {
-    public struct GeometrySetup
+    public class GeometrySetup
     {
         public ShaderSetup ShaderSetup;
         public BufferSetup BufferSetup;
@@ -15,7 +15,7 @@ namespace VerySeriousEngine.Utils
         }
     }
 
-    public struct ShaderSetup
+    public class ShaderSetup
     {
         public InputLayout InputLayout { get; private set; }
         public VertexShader VertexShader { get; private set; }
@@ -36,10 +36,9 @@ namespace VerySeriousEngine.Utils
             InputLayout = vertexShaderCompileResult.Item2;
             PixelShader = constructor.CompilePixelShader(shaderFileName, pixelShaderEntryPoint);
         }
-
     }
 
-    public struct BufferSetup
+    public class BufferSetup
     {
         public Buffer IndexBuffer;
         public VertexBufferBinding VertexBufferBinding;
