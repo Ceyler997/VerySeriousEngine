@@ -24,7 +24,8 @@ namespace TestProject
                 planetMesh = new StaticMeshComponent(this)
                 {
                     Mesh = mesh,
-                };
+                    DefaultShader = new Shader("Shaders/VertexColorShader.hlsl"),
+            };
             }
 
             public override void Update(float frameTime)

@@ -4,32 +4,32 @@ using VerySeriousEngine.Geometry;
 
 namespace VerySeriousEngine.Utils
 {
-    public class GeometrySetup
+    public class RenderSetup
     {
-        public ShaderSetup ShaderSetup;
-        public BufferSetup BufferSetup;
+        public Shader ShaderSetup;
+        public Geometry BufferSetup;
 
-        public GeometrySetup(ShaderSetup shaderSetup, BufferSetup bufferSetup)
+        public RenderSetup(Shader shaderSetup, Geometry bufferSetup)
         {
             ShaderSetup = shaderSetup;
             BufferSetup = bufferSetup;
         }
     }
 
-    public class ShaderSetup
+    public class Shader
     {
         public InputLayout InputLayout { get; private set; }
         public VertexShader VertexShader { get; private set; }
         public PixelShader PixelShader { get; private set; }
 
-        public ShaderSetup(VertexShader vertexShader, InputLayout inputLayout, PixelShader pixelShader)
+        public Shader(VertexShader vertexShader, InputLayout inputLayout, PixelShader pixelShader)
         {
             VertexShader = vertexShader;
             InputLayout = inputLayout;
             PixelShader = pixelShader;
         }
 
-        public ShaderSetup(string shaderFileName, string vertexShaderEntryPoint = "VSMain", string pixelShaderEntryPoint = "PSMain")
+        public Shader(string shaderFileName, string vertexShaderEntryPoint = "VSMain", string pixelShaderEntryPoint = "PSMain")
         {
             var constructor = Game.GameInstance.GameConstructor;
             var vertexShaderCompileResult = constructor.CompileVertexShader(shaderFileName, vertexShaderEntryPoint, Vertex.InputElements);
@@ -38,7 +38,7 @@ namespace VerySeriousEngine.Utils
             PixelShader = constructor.CompilePixelShader(shaderFileName, pixelShaderEntryPoint);
         }
 
-        public ShaderSetup(string shaderFileName, InputElement[] inputElements, string vertexShaderEntryPoint = "VSMain", string pixelShaderEntryPoint = "PSMain")
+        public Shader(string shaderFileName, InputElement[] inputElements, string vertexShaderEntryPoint = "VSMain", string pixelShaderEntryPoint = "PSMain")
         {
             var constructor = Game.GameInstance.GameConstructor;
             var vertexShaderCompileResult = constructor.CompileVertexShader(shaderFileName, vertexShaderEntryPoint, inputElements);
@@ -48,13 +48,13 @@ namespace VerySeriousEngine.Utils
         }
     }
 
-    public class BufferSetup
+    public class Geometry
     {
         public Buffer IndexBuffer;
         public VertexBufferBinding VertexBufferBinding;
         public int IndexCount;
 
-        public BufferSetup(Buffer indexBuffer, VertexBufferBinding vertexBufferBinding, int indexCount)
+        public Geometry(Buffer indexBuffer, VertexBufferBinding vertexBufferBinding, int indexCount)
         {
             IndexBuffer = indexBuffer;
             VertexBufferBinding = vertexBufferBinding;

@@ -10,7 +10,7 @@ namespace VerySeriousEngine.Interfaces
     public interface IRenderable
     {
         bool IsRendered { get; }
-        IEnumerable<GeometrySetup> Geometry { get; }
+        IEnumerable<RenderSetup> Setup { get; }
         Matrix WorldMatrix { get; }
     }
 }

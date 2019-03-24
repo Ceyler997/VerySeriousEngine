@@ -116,7 +116,7 @@ namespace VerySeriousEngine.Core
             if (renderable.IsRendered == false)
                 return;
 
-            foreach(var piece in renderable.Geometry)
+            foreach(var piece in renderable.Setup)
             {
                 if (piece == null)
                 {

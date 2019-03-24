@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using VerySeriousEngine.Core;
-using VerySeriousEngine.Interfaces;
 using VerySeriousEngine.Utils;
 
 namespace VerySeriousEngine.Geometry
@@ -33,37 +32,28 @@ namespace VerySeriousEngine.Geometry
         public Vertex Vertex3;
     }
 
-    public class StaticMesh : IRenderable
+    public class StaticMesh : IDisposable
     {
         public string Name { get; set; } = "Static Mesh";
 
-        private Dictionary<GeometrySetup, string> geometryPieces;
-        private ShaderSetup shader;
+        private Dictionary<string, Utils.Geometry> geometryPieces;
 
-        public ShaderSetup Shader {
-            get => shader;
-            set {
-                if (shader == value)
-                    return;
-                shader = value;
-                foreach (var piece in geometryPieces)
-                    piece.Key.ShaderSetup = value;
-            }
-        }
-
-        public bool IsRendered => true;
-        public Matrix WorldMatrix => Matrix.Identity;
-
-        public IEnumerable<GeometrySetup> Geometry { get => geometryPieces.Keys; }
+        public IReadOnlyDictionary<string, Utils.Geometry> Geometry { get => geometryPieces; }
 
         public StaticMesh(string name)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
-            geometryPieces = new Dictionary<GeometrySetup, string>();
+            geometryPieces = new Dictionary<string, Utils.Geometry>();
         }
 
-        public void AddGeometryPiece(IEnumerable<StaticMeshFace> faces, string name)
+        public void AddGeometryPiece(string name, IEnumerable<StaticMeshFace> faces)
         {
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+
+            if (geometryPieces.ContainsKey(name))
+                throw new ArgumentException("Mesh already contains piece named " + name);
+
             var constructor = Game.GameInstance.GameConstructor;
             var vertices = new List<Vertex>();
             var indices = new List<int>();
@@ -82,9 +72,28 @@ namespace VerySeriousEngine.Geometry
             var vertexBuffer = constructor.CreateBuffer(vertices.ToArray(), BindFlags.VertexBuffer);
             var vertexBufferBinding = new VertexBufferBinding(vertexBuffer, Marshal.SizeOf<Vertex>(), 0);
             var indexBuffer = constructor.CreateBuffer(indices.ToArray(), BindFlags.IndexBuffer);
-            BufferSetup geometrySetup = new BufferSetup(indexBuffer, vertexBufferBinding, indices.Count);
 
-            geometryPieces.Add(new GeometrySetup(Shader, geometrySetup), name);
+            geometryPieces.Add(name, new Utils.Geometry(indexBuffer, vertexBufferBinding, indices.Count));
+        }
+
+        public bool RemoveGeometryPiece(string name)
+        {
+            if (!geometryPieces.ContainsKey(name))
+                return false;
+
+            geometryPieces[name].IndexBuffer.Dispose();
+            geometryPieces[name].VertexBufferBinding.Buffer.Dispose();
+
+            return geometryPieces.Remove(name);
+        }
+
+        public void Dispose()
+        {
+            foreach(var piece in geometryPieces.Values)
+            {
+                piece.IndexBuffer.Dispose();
+                piece.VertexBufferBinding.Buffer.Dispose();
+            }
         }
     }
 }

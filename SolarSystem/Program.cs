@@ -20,7 +20,6 @@ namespace TestProject
 
             var testModel = MeshImporter.ImportModelFromFile("Models/Earth/Earth.obj");
             var planet = testModel[0];
-            planet.Shader = new ShaderSetup("Shaders/VertexColorShader.hlsl");
 
             var texture = TextureImporter.ImportTextureFromFile("Models/Earth/Textures/Diffuse_2K.png");
 

@@ -199,7 +199,7 @@ namespace VerySeriousEngine.Utils.Importers
         private void FinishCurrentMaterial()
         {
             if (faces.Count > 0)
-                CurrentMesh.AddGeometryPiece(faces, currentMaterialName);
+                CurrentMesh.AddGeometryPiece(currentMaterialName, faces);
             faces.Clear();
         }
         

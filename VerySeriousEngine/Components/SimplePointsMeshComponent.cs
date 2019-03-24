@@ -14,9 +14,9 @@ namespace VerySeriousEngine.Components
     {
         private WorldObject worldOwner;
 
-        private readonly GeometrySetup[] setup;
+        private readonly RenderSetup[] setup;
 
-        public SimplePointsMeshComponent(WorldObject owner, ShaderSetup shaderSetup, Vertex[] points, int[] indices, string componentName = null, bool isActiveAtStart = true) : base(owner, componentName, isActiveAtStart)
+        public SimplePointsMeshComponent(WorldObject owner, Shader shaderSetup, Vertex[] points, int[] indices, string componentName = null, bool isActiveAtStart = true) : base(owner, componentName, isActiveAtStart)
         {
             worldOwner = owner;
             var constructor = Game.GameInstance.GameConstructor;
@@ -26,11 +26,11 @@ namespace VerySeriousEngine.Components
 
             var vertexBuffer = constructor.CreateBuffer(points, BindFlags.VertexBuffer);
             var vertexBufferBinding = new VertexBufferBinding(vertexBuffer, Marshal.SizeOf<Vertex>(), 0);
-            BufferSetup geometrySetup = new BufferSetup(indexBuffer, vertexBufferBinding, indexCount);
+            Utils.Geometry geometrySetup = new Utils.Geometry(indexBuffer, vertexBufferBinding, indexCount);
 
-            setup = new GeometrySetup[]
+            setup = new RenderSetup[]
             {
-                new GeometrySetup(shaderSetup, geometrySetup),
+                new RenderSetup(shaderSetup, geometrySetup),
             };
         }
 
@@ -38,6 +38,6 @@ namespace VerySeriousEngine.Components
 
         public bool IsRendered => IsActive;
 
-        public IEnumerable<GeometrySetup> Geometry => setup;
+        public IEnumerable<RenderSetup> Setup => setup;
     }
 }
