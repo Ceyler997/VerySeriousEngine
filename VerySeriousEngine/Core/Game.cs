@@ -27,6 +27,7 @@ namespace VerySeriousEngine.Core
         private Game(string name, int windowWidth, int windowHeight, bool isWindowed)
         {
             Logger.Log("Game construction");
+            SharpDX.Configuration.EnableObjectTracking = true;
 
             GameName = name ?? throw new ArgumentNullException(nameof(GameName));
 
@@ -79,6 +80,7 @@ namespace VerySeriousEngine.Core
                 GameInstance = null;
             else
                 Logger.LogWarning("Game Instance is not this at Dispose");
+            Logger.LogWarning(SharpDX.Diagnostics.ObjectTracker.ReportActiveObjects());
         }
 
         public void StartGame()
