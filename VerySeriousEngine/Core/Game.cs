@@ -103,13 +103,23 @@ namespace VerySeriousEngine.Core
 
         private void GameLoop()
         {
-            TimeManager.UpdateFrameTime();
+            try
+            {
+                TimeManager.UpdateFrameTime();
 
-            InputManager.Update();
-            if (CurrentWorld != null)
-                CurrentWorld.Update(TimeManager.FrameTime);
-            else
-                Logger.LogWarning("No Game World");
+                InputManager.Update();
+                if (CurrentWorld != null)
+                    CurrentWorld.Update(TimeManager.FrameTime);
+                else
+                    Logger.LogWarning("No Game World");
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.Message);
+                Logger.LogError(e.StackTrace);
+                Console.WriteLine("Press Enter to continue.");
+                Console.ReadLine();
+            }
         }
     }
 }
