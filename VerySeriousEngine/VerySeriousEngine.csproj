@@ -82,6 +82,7 @@
     <Compile Include="Core\TimeManager.cs" />
     <Compile Include="Core\World.cs" />
     <Compile Include="Geometry\StaticMesh.cs" />
+    <Compile Include="Shaders\Objects\Shader.cs" />
     <Compile Include="Utils\Import\MeshImporter.cs" />
     <Compile Include="Utils\Import\TextureImporter.cs" />
     <Compile Include="Utils\Math.cs" />
@@ -102,7 +103,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Shaders\VertexColorShader.hlsl">
+    <Content Include="Shaders\Code\VertexColorShader.hlsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

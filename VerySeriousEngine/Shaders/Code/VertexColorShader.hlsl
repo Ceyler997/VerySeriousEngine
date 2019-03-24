@@ -23,7 +23,7 @@ PS_IN VSMain( VS_IN input )
 {
     PS_IN output = (PS_IN)0;
 
-    output.position = mul(worldViewProj, input.position);  // WHY?
+    output.position = mul(worldViewProj, input.position);
     output.color	= input.color;
 
     return output;

@@ -3,7 +3,7 @@ using SharpDX;
 using VerySeriousEngine.Components;
 using VerySeriousEngine.Geometry;
 using VerySeriousEngine.Objects;
-using VerySeriousEngine.Utils;
+using VerySeriousEngine.Shaders;
 
 namespace TestProject
 {
@@ -24,7 +24,7 @@ namespace TestProject
                 planetMesh = new StaticMeshComponent(this)
                 {
                     Mesh = mesh,
-                    DefaultShader = new Shader("Shaders/VertexColorShader.hlsl"),
+                    DefaultShader = new VertexColorShader(),
             };
             }
 

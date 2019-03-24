@@ -5,6 +5,7 @@ using VerySeriousEngine.Components.Physics2D;
 using VerySeriousEngine.Core;
 using VerySeriousEngine.Geometry;
 using VerySeriousEngine.Objects;
+using VerySeriousEngine.Shaders;
 using VerySeriousEngine.Utils;
 
 namespace Pong
@@ -16,7 +17,7 @@ namespace Pong
 
         public Platform(float width, float height, Color color, GameObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
         {
-            var shaderSetup = new Shader("Shaders/VertexColorShader.hlsl", Vertex.InputElements);
+            var shaderSetup = new VertexColorShader();
             var indices = new int[] { 0, 1, 2, 1, 2, 3 };
             var points = new Vertex[]
             {
@@ -54,7 +55,7 @@ namespace Pong
 
         public Ball(float radius, Color color, int segmentsAmount = 12, GameObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
         {
-            var shaderSetup = new Shader("Shaders/VertexColorShader.hlsl", Vertex.InputElements);
+            var shaderSetup = new VertexColorShader();
 
             var points = new Vertex[segmentsAmount + 1];
             points[0] = new Vertex()

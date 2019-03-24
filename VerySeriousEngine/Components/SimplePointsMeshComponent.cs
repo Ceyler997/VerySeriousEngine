@@ -6,6 +6,7 @@ using VerySeriousEngine.Core;
 using VerySeriousEngine.Geometry;
 using VerySeriousEngine.Interfaces;
 using VerySeriousEngine.Objects;
+using VerySeriousEngine.Shaders;
 using VerySeriousEngine.Utils;
 
 namespace VerySeriousEngine.Components
