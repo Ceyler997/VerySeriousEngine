@@ -2,10 +2,10 @@ using SharpDX;
 using System;
 using System.Windows.Forms;
 using VerySeriousEngine.Core;
-using VerySeriousEngine.Geometry;
 using VerySeriousEngine.Input;
 using VerySeriousEngine.Objects;
 using VerySeriousEngine.Utils;
+using VerySeriousEngine.Utils.Import;
 
 namespace TestProject
 {
@@ -21,6 +21,8 @@ namespace TestProject
             var testModel = MeshImporter.ImportModelFromFile("Models/Earth/Earth.obj");
             var planet = testModel[0];
             planet.Shader = new ShaderSetup("Shaders/VertexColorShader.hlsl");
+
+            var texture = TextureImporter.ImportTextureFromFile("Models/Earth/Textures/Diffuse_2K.png");
 
             solarSystemGame.CurrentWorld = new World("Solar System");
 

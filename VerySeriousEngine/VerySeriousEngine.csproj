@@ -83,6 +83,7 @@
     <Compile Include="Core\World.cs" />
     <Compile Include="Geometry\StaticMesh.cs" />
     <Compile Include="Utils\Import\MeshImporter.cs" />
+    <Compile Include="Utils\Import\TextureImporter.cs" />
     <Compile Include="Utils\Math.cs" />
     <Compile Include="Input\KeyboardInput.cs" />
     <Compile Include="Input\MouseInput.cs" />
