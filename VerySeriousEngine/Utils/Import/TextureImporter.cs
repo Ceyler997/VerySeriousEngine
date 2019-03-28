@@ -24,7 +24,8 @@ namespace VerySeriousEngine.Utils.Import
             {
                 case PixelFormat.Canonical:
                 case PixelFormat.Format32bppArgb:
-                    descFormat = Format.R8G8B8A8_UInt;
+                case PixelFormat.Format24bppRgb:
+                    descFormat = Format.B8G8R8A8_UNorm;
                     break;
                 default:
                     throw new ArgumentException("Unknown pixel format " + bitmap.PixelFormat);

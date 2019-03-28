@@ -47,8 +47,9 @@ namespace VerySeriousEngine.Core
         public void Setup(Constructor constructor)
         {
             worldTransformMatrixBuffer = constructor.CreateEmptyBuffer(Matrix.SizeInBytes, BindFlags.ConstantBuffer);
-            SetupRasterizer();
             SetupInputAssembler();
+            SetupRasterizer();
+            SetupPixelShader();
             SetupOutputMerger();            
         }
 
@@ -68,7 +69,17 @@ namespace VerySeriousEngine.Core
 
             state.Dispose();
         }
-        
+
+        private void SetupPixelShader()
+        {
+            var description = SamplerStateDescription.Default();
+            description.AddressU = TextureAddressMode.Wrap;
+            description.AddressV = TextureAddressMode.Wrap;
+            var state = new SamplerState(Device, description);
+            Context.PixelShader.SetSampler(0, state);
+            state.Dispose();
+        }
+
         private void SetupOutputMerger()
         {
             var backBuffer = swapChain.GetBackBuffer<Texture2D>(0);
@@ -135,6 +146,8 @@ namespace VerySeriousEngine.Core
                     Logger.LogError("Trying to render object without geometry");
                     continue;
                 }
+
+                piece.ShaderSetup.PrepareResources(this);
 
                 Context.InputAssembler.InputLayout = piece.ShaderSetup.InputLayout;
                 Context.VertexShader.Set(piece.ShaderSetup.VertexShader);

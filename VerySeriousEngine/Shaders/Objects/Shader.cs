@@ -2,10 +2,11 @@
 using System;
 using VerySeriousEngine.Core;
 using VerySeriousEngine.Geometry;
+using VerySeriousEngine.Utils.Import;
 
 namespace VerySeriousEngine.Shaders
 {
-    public class Shader : IDisposable
+    abstract public class Shader : IDisposable
     {
         public InputLayout InputLayout { get; private set; }
         public VertexShader VertexShader { get; private set; }
@@ -20,7 +21,9 @@ namespace VerySeriousEngine.Shaders
             PixelShader = constructor.CompilePixelShader(shaderFileName, pixelShaderEntryPoint);
         }
 
-        public void Dispose()
+        abstract public void PrepareResources(Renderer renderer);
+
+        virtual public void Dispose()
         {
             InputLayout.Dispose();
             VertexShader.Dispose();
@@ -32,5 +35,29 @@ namespace VerySeriousEngine.Shaders
     {
         public VertexColorShader() : base("Shaders/Code/VertexColorShader.hlsl", Vertex.InputElements, "VSMain", "PSMain")
         { }
+
+        public override void PrepareResources(Renderer renderer)
+        { }
+    }
+
+    public class TextureShader : Shader
+    {
+        private readonly ShaderResourceView textureResource;
+
+        public TextureShader(string texturePath) : base("Shaders/Code/TextureShader.hlsl", Vertex.InputElements, "VSMain", "PSMain")
+        {
+            textureResource = TextureImporter.ImportTextureFromFile(texturePath);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            textureResource.Dispose();
+        }
+
+        public override void PrepareResources(Renderer renderer)
+        {
+            renderer.Context.PixelShader.SetShaderResource(0, textureResource);
+        }
     }
 }

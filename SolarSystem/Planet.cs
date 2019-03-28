@@ -24,7 +24,7 @@ namespace TestProject
                 planetMesh = new StaticMeshComponent(this)
                 {
                     Mesh = mesh,
-                    DefaultShader = new VertexColorShader(),
+                    DefaultShader = new TextureShader("Models/Earth/Textures/Diffuse_2K.png"),
             };
             }
 
