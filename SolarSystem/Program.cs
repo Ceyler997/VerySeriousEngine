@@ -1,6 +1,7 @@
 using SharpDX;
 using System;
 using System.Windows.Forms;
+using VerySeriousEngine.Components;
 using VerySeriousEngine.Core;
 using VerySeriousEngine.Input;
 using VerySeriousEngine.Objects;
@@ -39,12 +40,17 @@ namespace TestProject
             };
 
             var center = new WorldObject();
-            var Sun = new Planet(0, planet, center, "Sun")
+            var directionalLight = new DirectionalLightComponent(center)
+            {
+                Direction = Vector3.Normalize(Vector3.Down + Vector3.Right),
+            };
+            var sun = new Planet(0, planet, center, "Sun")
             {
                 PlanetSize = 100,
                 RotationAngularSpeed = 0.0f,
                 TurningAngularSpeed = 1.0f,
             };
+            var sunPointLight = new PointLightComponent(sun);
             var mercury = new Planet(400, planet, center, "Mercury")
             {
                 PlanetSize = 3,
@@ -69,6 +75,7 @@ namespace TestProject
                 RotationAngularSpeed = 2.0f,
                 TurningAngularSpeed = 1.0f,
             };
+            var moonPointLight = new PointLightComponent(moon);
             var mars = new Planet(1500, planet, center, "Mars")
             {
                 PlanetSize = 5f,
@@ -76,6 +83,9 @@ namespace TestProject
                 TurningAngularSpeed = 0.8f,
             };
 
+            solarSystemGame.GameRenderer.LightingModel.AddDirectionalLight(directionalLight);
+            solarSystemGame.GameRenderer.LightingModel.AddPointLight(sunPointLight);
+            solarSystemGame.GameRenderer.LightingModel.AddPointLight(moonPointLight);
             solarSystemGame.StartGame();
             solarSystemGame.Dispose();
             Console.WriteLine();

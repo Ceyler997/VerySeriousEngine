@@ -129,7 +129,7 @@ namespace VerySeriousEngine.Shaders
         public override void PrepareResources(Renderer renderer)
         {
             renderer.Context.PixelShader.SetShaderResource(0, textureResource);
-            renderer.Context.PixelShader.SetConstantBuffer(1, constantBuffer);
+            renderer.Context.PixelShader.SetConstantBuffer(2, constantBuffer);
         }
 
         private void UpdateConstantBuffer()

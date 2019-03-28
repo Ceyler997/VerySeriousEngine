@@ -71,7 +71,7 @@ namespace VerySeriousEngine.Core
         private void RenderObjects(float frameTime)
         {
             var renderer = Game.GameInstance.GameRenderer;
-            renderer.ClearFrame();
+            renderer.StartFrame();
             var ViewProjectionMatrix = WorldPointOfView.ViewMatrix * WorldPointOfView.ProjectionMatrix;
             foreach (var renderable in Renderable)
             {

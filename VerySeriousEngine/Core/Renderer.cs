@@ -24,6 +24,8 @@ namespace VerySeriousEngine.Core
         public Device Device { get => device; }
         public DeviceContext Context { get => Device.ImmediateContext; }
 
+        public LightingModel LightingModel { get; set; }
+
         public int FrameWidth { get => form.Width; }
         public int FrameHeight { get => form.Height; }
 
@@ -120,10 +122,12 @@ namespace VerySeriousEngine.Core
             state.Dispose();
         }
 
-        public void ClearFrame()
+        public void StartFrame()
         {
             Context.ClearRenderTargetView(renderView, Color.Black);
             Context.ClearDepthStencilView(depthView, DepthStencilClearFlags.Depth, 1.0f, 0);
+            if (LightingModel != null)
+                LightingModel.UpdateBuffers(this);
         }
 
         public void RenderObject(IRenderable renderable, Matrix WVP)
@@ -176,6 +180,8 @@ namespace VerySeriousEngine.Core
 
         public void Dispose()
         {
+            if (LightingModel != null)
+                LightingModel.Dispose();
             worldTransformMatrixBuffer.Dispose();
             renderView.Dispose();
             depthView.Dispose();

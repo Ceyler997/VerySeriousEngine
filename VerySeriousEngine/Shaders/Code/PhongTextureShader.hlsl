@@ -1,9 +1,15 @@
-﻿cbuffer MergedShaderBuffer : register(b0)
+﻿cbuffer MB_WorldProjection: register(b0)
 {
     float4x4 worldViewProj;
 };
 
-cbuffer PixelShaderBuffer : register(b1)
+cbuffer PSB_LightSources : register(b1)
+{
+    float4 directionalLight;
+    float4 pointLights[8];
+};
+
+cbuffer PSB_MaterialSetup : register(b2)
 {
     float specularRefl;
     float diffuseRefl;

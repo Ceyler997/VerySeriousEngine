@@ -46,6 +46,7 @@ namespace VerySeriousEngine.Core
             TimeManager.Setup();
             SetupPhysics();
             GameRenderer.Setup(GameConstructor);
+            GameRenderer.LightingModel = new RestrictedLightingModel(GameConstructor, GameRenderer);
         }
 
         public override string ToString()
