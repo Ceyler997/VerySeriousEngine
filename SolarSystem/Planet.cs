@@ -24,8 +24,9 @@ namespace TestProject
                 planetMesh = new StaticMeshComponent(this)
                 {
                     Mesh = mesh,
-                    DefaultShader = new TextureShader("Models/Earth/Textures/Diffuse_2K.png"),
-            };
+                    DefaultShader = new PhongShader("Models/Earth/Textures/Diffuse_2K.png")
+                    { Shininess = new Random().NextFloat(0.0f, 1.0f) },
+                };
             }
 
             public override void Update(float frameTime)

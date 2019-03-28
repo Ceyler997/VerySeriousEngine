@@ -48,6 +48,7 @@ namespace VerySeriousEngine.Core
         {
             worldTransformMatrixBuffer = constructor.CreateEmptyBuffer(Matrix.SizeInBytes, BindFlags.ConstantBuffer);
             SetupInputAssembler();
+            SetupVertexShader();
             SetupRasterizer();
             SetupPixelShader();
             SetupOutputMerger();            
@@ -56,6 +57,11 @@ namespace VerySeriousEngine.Core
         private void SetupInputAssembler()
         {
             Context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+        }
+
+        private void SetupVertexShader()
+        {
+            Context.VertexShader.SetConstantBuffer(0, worldTransformMatrixBuffer);
         }
 
         private void SetupRasterizer()
@@ -76,6 +82,7 @@ namespace VerySeriousEngine.Core
             description.AddressU = TextureAddressMode.Wrap;
             description.AddressV = TextureAddressMode.Wrap;
             var state = new SamplerState(Device, description);
+            Context.PixelShader.SetConstantBuffer(0, worldTransformMatrixBuffer);
             Context.PixelShader.SetSampler(0, state);
             state.Dispose();
         }
@@ -147,6 +154,7 @@ namespace VerySeriousEngine.Core
                     continue;
                 }
 
+                Context.UpdateSubresource(ref WVP, worldTransformMatrixBuffer);
                 piece.ShaderSetup.PrepareResources(this);
 
                 Context.InputAssembler.InputLayout = piece.ShaderSetup.InputLayout;
@@ -156,8 +164,6 @@ namespace VerySeriousEngine.Core
                 Context.InputAssembler.SetIndexBuffer(piece.BufferSetup.IndexBuffer, Format.R32_UInt, 0);
                 Context.InputAssembler.SetVertexBuffers(0, piece.BufferSetup.VertexBufferBinding);
 
-                Context.UpdateSubresource(ref WVP, worldTransformMatrixBuffer);
-                Context.VertexShader.SetConstantBuffer(0, worldTransformMatrixBuffer);
 
                 Context.DrawIndexed(piece.BufferSetup.IndexCount, 0, 0);
             }
