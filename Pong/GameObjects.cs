@@ -18,7 +18,7 @@ namespace Pong
         public Platform(float width, float height, Color color, GameObject parent = null, string objectName = null, bool isActiveAtStart = true) : base(parent, objectName, isActiveAtStart)
         {
             var shaderSetup = new VertexColorShader();
-            var indices = new int[] { 0, 1, 2, 1, 2, 3 };
+            var indices = new int[] { 0, 2, 1, 1, 2, 3 };
             var points = new Vertex[]
             {
                 new Vertex(){Location = new Vector3(-width/2,  height/2, .0f), Color = color.ToVector4() }, // upper left

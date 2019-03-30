@@ -69,7 +69,7 @@ namespace VerySeriousEngine.Core
         private void SetupRasterizer()
         {
             var description = RasterizerStateDescription.Default();
-            description.CullMode = CullMode.None;
+            description.CullMode = CullMode.Front;
             var state = new RasterizerState(Device, description);
 
             Context.Rasterizer.State = state;
