@@ -46,17 +46,16 @@ struct PS_IN
 
 float GetDirectionalSourceIntensity(float3 sourceDirection, float lightIntensity, float3 pointLocation, float3 pointLocalNormal)
 {
-    sourceDirection = sourceDirection * -1;
 
     float4 normalVector = float4(pointLocalNormal.xyz, 0.0f);
     normalVector = mul(normalVector, worldTransform);
     float3 pointNormal = normalize(normalVector.xyz);
     
-    float3 reflectionDirection = 2 * dot(sourceDirection, pointNormal) * pointNormal - sourceDirection;
+    float3 reflectionDirection = reflect(sourceDirection, pointNormal);
     
     float3 cameraDirection = normalize(cameraLocation.xyz - pointLocation);
     
-    float diffuse = lightIntensity * diffuseRefl * dot(sourceDirection, pointNormal);
+    float diffuse = lightIntensity * diffuseRefl * dot(sourceDirection * -1, pointNormal); // -1 because it should be direction to the source
     diffuse = max(0, diffuse);
     float specular = lightIntensity * specularRefl * pow(max(0, dot(reflectionDirection, cameraDirection)), shininess);
     specular = max(0, specular);
