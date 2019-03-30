@@ -17,7 +17,7 @@ namespace VerySeriousEngine.Core
 
         public Tuple<VertexShader, InputLayout> CompileVertexShader(string fileName, string entryPoint, InputElement[] inputElements)
         {
-            var shaderByteCode = ShaderBytecode.CompileFromFile(fileName, entryPoint, "vs_5_0", ShaderFlags.Debug);
+            var shaderByteCode = ShaderBytecode.CompileFromFile(fileName, entryPoint, "vs_5_0", ShaderFlags.Debug | ShaderFlags.PackMatrixRowMajor);
             var shader = new VertexShader(device, shaderByteCode);
             var layout = new InputLayout(device, shaderByteCode, inputElements);
             return new Tuple<VertexShader, InputLayout>(shader, layout);
@@ -25,7 +25,7 @@ namespace VerySeriousEngine.Core
 
         public PixelShader CompilePixelShader(string fileName, string entryPoint)
         {
-            var shaderByteCode = ShaderBytecode.CompileFromFile(fileName, entryPoint, "ps_5_0", ShaderFlags.Debug);
+            var shaderByteCode = ShaderBytecode.CompileFromFile(fileName, entryPoint, "ps_5_0", ShaderFlags.Debug | ShaderFlags.PackMatrixRowMajor);
             return new PixelShader(device, shaderByteCode);
         }
 

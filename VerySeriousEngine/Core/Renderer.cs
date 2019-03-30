@@ -48,7 +48,7 @@ namespace VerySeriousEngine.Core
 
         public void Setup(Constructor constructor)
         {
-            worldTransformMatrixBuffer = constructor.CreateEmptyBuffer(Matrix.SizeInBytes, BindFlags.ConstantBuffer);
+            worldTransformMatrixBuffer = constructor.CreateEmptyBuffer(Matrix.SizeInBytes * 3, BindFlags.ConstantBuffer);
             SetupInputAssembler();
             SetupVertexShader();
             SetupRasterizer();
@@ -130,7 +130,7 @@ namespace VerySeriousEngine.Core
                 LightingModel.UpdateBuffers(this);
         }
 
-        public void RenderObject(IRenderable renderable, Matrix WVP)
+        public void RenderObject(IRenderable renderable, ref Matrix WorldMatrix, ref Matrix ViewMatrix, ref Matrix ProjectionMatrix)
         {
             if (renderable == null)
                 return;
@@ -158,7 +158,8 @@ namespace VerySeriousEngine.Core
                     continue;
                 }
 
-                Context.UpdateSubresource(ref WVP, worldTransformMatrixBuffer);
+                Matrix[] WVP = new Matrix[3] { WorldMatrix, ViewMatrix, ProjectionMatrix };
+                Context.UpdateSubresource(WVP, worldTransformMatrixBuffer);
                 piece.ShaderSetup.PrepareResources(this);
 
                 Context.InputAssembler.InputLayout = piece.ShaderSetup.InputLayout;

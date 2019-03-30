@@ -1,6 +1,8 @@
 cbuffer ShaderData : register(b0)
 {
-    float4x4 worldViewProj;
+    float4x4 worldTransform;
+    float4x4 viewTransform;
+    float4x4 projectionTransform;
 };
 
 struct VS_IN
@@ -19,10 +21,11 @@ struct PS_IN
 
 PS_IN VSMain( VS_IN input )
 {
-    PS_IN output = (PS_IN)0;
+    PS_IN output;
+    float4x4 worldViewProj = mul(worldTransform, mul(viewTransform, projectionTransform));
     
-    float4 position = float4(input.position.x, input.position.y, input.position.z, 1.0f);
-    output.position = mul(worldViewProj, position);
+    float4 position = float4(input.position.xyz, 1.0f);
+    output.position = mul(position, worldViewProj);
     output.color	= input.color;
 
     return output;

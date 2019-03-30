@@ -1,6 +1,8 @@
-﻿cbuffer MB_WorldProjection: register(b0)
+﻿cbuffer MB_WorldProjection : register(b0)
 {
-    float4x4 worldViewProj;
+    float4x4 worldTransform;
+    float4x4 viewTransform;
+    float4x4 projectionTransform;
 };
 
 cbuffer PSB_LightSources : register(b1)
@@ -14,12 +16,11 @@ cbuffer PSB_MaterialSetup : register(b2)
     float specularRefl;
     float diffuseRefl;
     float ambientRefl;
-    float shininessRefl;
+    float shininess;
 };
 
 Texture2D diffuse : register(ps, t0);
 SamplerState textureSampler : register(ps, s0);
-
 
 struct VS_IN
 {
@@ -41,9 +42,10 @@ struct PS_IN
 PS_IN VSMain(VS_IN input)
 {
     PS_IN output;
+    float4x4 worldViewProj = mul(worldTransform, mul(viewTransform, projectionTransform));
 
-    float4 position = float4(input.position.x, input.position.y, input.position.z, 1.0f);
-    output.position = mul(worldViewProj, position);
+    float4 position = float4(input.position.xyz, 1.0f);
+    output.position = mul(position, worldViewProj);
     output.normal = input.normal;
     output.texcoord = input.texcoord;
     output.color = input.color;

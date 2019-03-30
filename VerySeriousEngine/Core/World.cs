@@ -72,13 +72,12 @@ namespace VerySeriousEngine.Core
         {
             var renderer = Game.GameInstance.GameRenderer;
             renderer.StartFrame();
-            var ViewProjectionMatrix = WorldPointOfView.ViewMatrix * WorldPointOfView.ProjectionMatrix;
             foreach (var renderable in Renderable)
             {
                 if (!renderable.IsRendered)
                     continue;
-                Matrix WVP = renderable.WorldMatrix * ViewProjectionMatrix;
-                renderer.RenderObject(renderable, WVP);
+                var WorldMatrix = renderable.WorldMatrix;
+                renderer.RenderObject(renderable, ref WorldMatrix, ref WorldPointOfView.ViewMatrix, ref WorldPointOfView.ProjectionMatrix);
             }
             renderer.FinishFrame();
         }
