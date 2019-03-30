@@ -19,6 +19,11 @@ cbuffer PSB_MaterialSetup : register(b2)
     float shininess;
 };
 
+cbuffer PSB_Camera : register(b3)
+{
+    float4 cameraLocation;
+}
+
 Texture2D diffuse : register(ps, t0);
 SamplerState textureSampler : register(ps, s0);
 
@@ -33,27 +38,23 @@ struct VS_IN
 struct PS_IN
 {
     float4 position : SV_POSITION;
+    float3 localPosition : LOCPOSITION;
     float3 normal : NORMAL;
     float2 texcoord : TEXCOORD;
     float4 color : COLOR;
 };
 
-float GetDirectionalSourceIntensity(float3 sourceWorldDirection, float lightIntensity, float3 pointProjLocation, float3 pointLocalNormal)
+float GetDirectionalSourceIntensity(float3 sourceDirection, float lightIntensity, float3 pointLocation, float3 pointLocalNormal)
 {
-    float4x4 viewProj = mul(viewTransform, projectionTransform);
-    float4x4 worldViewProj = mul(worldTransform, viewProj);
-
-    float4 directionVector = float4(sourceWorldDirection.xyz, 0.0f);
-    directionVector = mul(directionVector, viewProj);
-    float3 sourceDirection = normalize(directionVector).xyz * -1;
+    sourceDirection = sourceDirection * -1;
 
     float4 normalVector = float4(pointLocalNormal.xyz, 0.0f);
-    normalVector = mul(normalVector, worldViewProj);
-    float3 pointNormal = normalize(normalVector).xyz;
+    normalVector = mul(normalVector, worldTransform);
+    float3 pointNormal = normalize(normalVector.xyz);
     
     float3 reflectionDirection = 2 * dot(sourceDirection, pointNormal) * pointNormal - sourceDirection;
     
-    float3 cameraDirection = normalize(mul(float4(0, 0, 0, 1), projectionTransform).xyz);
+    float3 cameraDirection = normalize(cameraLocation.xyz - pointLocation);
     
     float diffuse = lightIntensity * diffuseRefl * dot(sourceDirection, pointNormal);
     diffuse = max(0, diffuse);
@@ -64,7 +65,7 @@ float GetDirectionalSourceIntensity(float3 sourceWorldDirection, float lightInte
 
 float SourceIntensity(PS_IN meshPoint)
 {
-    return GetDirectionalSourceIntensity(directionalLight.xyz, directionalLight.w, meshPoint.position.xyz, meshPoint.normal);
+    return GetDirectionalSourceIntensity(directionalLight.xyz, directionalLight.w, meshPoint.localPosition.xyz, meshPoint.normal);
 }
 
 PS_IN VSMain(VS_IN input)
@@ -74,6 +75,7 @@ PS_IN VSMain(VS_IN input)
 
     float4 position = float4(input.position.xyz, 1.0f);
     output.position = mul(position, worldViewProj);
+    output.localPosition = input.position;
     output.normal = input.normal;
     output.texcoord = input.texcoord;
     output.color = input.color;

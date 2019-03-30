@@ -29,8 +29,8 @@ namespace TestProject
                     {
                         AmbientReflection = .23125f,
                         DiffuseReflection = 0.2775f,
-                        SpecularReflection = 0.773911f * 1000,
-                        Shininess = 10 //89.6f,
+                        SpecularReflection = .773911f,
+                        Shininess = 89.6f,
                     },
                 };
             }

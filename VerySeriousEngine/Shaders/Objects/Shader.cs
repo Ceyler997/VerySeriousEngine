@@ -1,4 +1,5 @@
-﻿using SharpDX.Direct3D11;
+﻿using SharpDX;
+using SharpDX.Direct3D11;
 using System;
 using VerySeriousEngine.Core;
 using VerySeriousEngine.Geometry;
@@ -65,7 +66,8 @@ namespace VerySeriousEngine.Shaders
 
     public class PhongShader : Shader
     {
-        private Buffer constantBuffer;
+        private Buffer parametersBuffer;
+        private Buffer cameraLocationBuffer;
         private ShaderResourceView textureResource;
 
         private readonly float[] constants;
@@ -115,26 +117,34 @@ namespace VerySeriousEngine.Shaders
         {
             constants = new float[4] { .5f, .5f, .5f, .5f };
 
-            constantBuffer = Game.GameInstance.GameConstructor.CreateBuffer(constants, BindFlags.ConstantBuffer);
+            parametersBuffer = Game.GameInstance.GameConstructor.CreateBuffer(constants, BindFlags.ConstantBuffer);
+            cameraLocationBuffer = Game.GameInstance.GameConstructor.CreateEmptyBuffer(Vector4.SizeInBytes, BindFlags.ConstantBuffer);
             textureResource = TextureImporter.ImportTextureFromFile(texturePath);
         }
 
         public override void Dispose()
         {
-            constantBuffer.Dispose();
+            parametersBuffer.Dispose();
             textureResource.Dispose();
+            cameraLocationBuffer.Dispose();
             base.Dispose();
         }
 
         public override void PrepareResources(Renderer renderer)
         {
+            var cameraMatrix = Game.GameInstance.CurrentWorld.WorldPointOfView.ViewMatrix;
+            cameraMatrix.Invert();
+            Vector4 cameraLocation = new Vector4(cameraMatrix.TranslationVector, 1);
+            Game.GameInstance.GameRenderer.Context.UpdateSubresource(ref cameraLocation, cameraLocationBuffer);
+
             renderer.Context.PixelShader.SetShaderResource(0, textureResource);
-            renderer.Context.PixelShader.SetConstantBuffer(2, constantBuffer);
+            renderer.Context.PixelShader.SetConstantBuffer(2, parametersBuffer);
+            renderer.Context.PixelShader.SetConstantBuffer(3, cameraLocationBuffer);
         }
 
         private void UpdateConstantBuffer()
         {
-            Game.GameInstance.GameRenderer.Context.UpdateSubresource(constants, constantBuffer);
+            Game.GameInstance.GameRenderer.Context.UpdateSubresource(constants, parametersBuffer);
         }
     }
 }

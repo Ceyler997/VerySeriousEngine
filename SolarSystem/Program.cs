@@ -43,6 +43,7 @@ namespace TestProject
             var directionalLight = new DirectionalLightComponent(center)
             {
                 Direction = Vector3.Normalize(Vector3.Down + Vector3.Right),
+                Intensity = 10,
             };
             var sun = new Planet(0, planet, center, "Sun")
             {

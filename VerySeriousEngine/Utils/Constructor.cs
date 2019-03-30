@@ -37,7 +37,7 @@ namespace VerySeriousEngine.Core
                 CpuAccessFlags = CpuAccessFlags.None,
                 OptionFlags = ResourceOptionFlags.None,
                 Usage = usage,
-                SizeInBytes = sizeInBytes,
+                SizeInBytes = sizeInBytes, // min is 16
             };
             return new Buffer(device, desc);
         }
@@ -50,7 +50,7 @@ namespace VerySeriousEngine.Core
                 CpuAccessFlags = CpuAccessFlags.None,
                 OptionFlags = ResourceOptionFlags.None,
                 Usage = usage,
-                SizeInBytes = Marshal.SizeOf<T>() * data.Length,
+                SizeInBytes = Marshal.SizeOf<T>() * data.Length, // min is 16
             };
             return Buffer.Create<T>(device, data, desc);
         }
