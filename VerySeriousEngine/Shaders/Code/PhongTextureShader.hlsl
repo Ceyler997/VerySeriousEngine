@@ -38,6 +38,34 @@ struct PS_IN
     float4 color : COLOR;
 };
 
+float GetDirectionalSourceIntensity(float3 sourceWorldDirection, float lightIntensity, float3 pointProjLocation, float3 pointLocalNormal)
+{
+    float4x4 viewProj = mul(viewTransform, projectionTransform);
+    float4x4 worldViewProj = mul(worldTransform, viewProj);
+
+    float4 directionVector = float4(sourceWorldDirection.xyz, 0.0f);
+    directionVector = mul(directionVector, viewProj);
+    float3 sourceDirection = normalize(directionVector).xyz * -1;
+
+    float4 normalVector = float4(pointLocalNormal.xyz, 0.0f);
+    normalVector = mul(normalVector, worldViewProj);
+    float3 pointNormal = normalize(normalVector).xyz;
+    
+    float3 reflectionDirection = 2 * dot(sourceDirection, pointNormal) * pointNormal - sourceDirection;
+    
+    float3 cameraDirection = normalize(mul(float4(0, 0, 0, 1), projectionTransform).xyz);
+    
+    float diffuse = lightIntensity * diffuseRefl * dot(sourceDirection, pointNormal);
+    diffuse = max(0, diffuse);
+    float specular = lightIntensity * specularRefl * pow(max(0, dot(reflectionDirection, cameraDirection)), shininess);
+    specular = max(0, specular);
+    return specular + diffuse;
+}
+
+float SourceIntensity(PS_IN meshPoint)
+{
+    return GetDirectionalSourceIntensity(directionalLight.xyz, directionalLight.w, meshPoint.position.xyz, meshPoint.normal);
+}
 
 PS_IN VSMain(VS_IN input)
 {
@@ -55,5 +83,5 @@ PS_IN VSMain(VS_IN input)
 
 float4 PSMain(PS_IN input) : SV_TARGET
 {
-    return diffuse.Sample(textureSampler, input.texcoord);
+    return diffuse.Sample(textureSampler, input.texcoord) * (SourceIntensity(input) + ambientRefl);
 }

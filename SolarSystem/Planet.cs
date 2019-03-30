@@ -24,8 +24,14 @@ namespace TestProject
                 planetMesh = new StaticMeshComponent(this)
                 {
                     Mesh = mesh,
+                    //DefaultShader = new TextureShader("Models/Earth/Textures/Diffuse_2K.png")
                     DefaultShader = new PhongShader("Models/Earth/Textures/Diffuse_2K.png")
-                    { Shininess = new Random().NextFloat(0.0f, 1.0f) },
+                    {
+                        AmbientReflection = .23125f,
+                        DiffuseReflection = 0.2775f,
+                        SpecularReflection = 0.773911f * 1000,
+                        Shininess = 10 //89.6f,
+                    },
                 };
             }
 
