@@ -78,5 +78,5 @@ PS_IN VSMain(VS_IN input)
 
 float4 PSMain(PS_IN input) : SV_TARGET
 {
-    return input.color * (SourceIntensity(input) + ambientRefl);
+    return float4(input.color.xyz * (SourceIntensity(input) + ambientRefl), input.color.w);
 }

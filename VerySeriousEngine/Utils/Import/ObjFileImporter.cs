@@ -170,7 +170,7 @@ namespace VerySeriousEngine.Utils.Importers
                 Location = vertices[vertexIndex],
                 TexCoord = Vector2.Zero,
                 Normal = Vector3.UnitY,
-                Color = Color.Wheat.ToVector4(),
+                Color = Color.DarkSlateGray.ToVector4(),
             };
 
             if (elements.Length > 1 && elements[1].Length > 0)

@@ -119,6 +119,22 @@ namespace VerySeriousEngine.Core
             Context.OutputMerger.SetDepthStencilState(state);
             Context.OutputMerger.SetTargets(depthView, renderView);
 
+            BlendStateDescription blendStateDescription = new BlendStateDescription();
+            blendStateDescription.RenderTarget[0] = new RenderTargetBlendDescription()
+            {
+                IsBlendEnabled = true,
+                SourceBlend = BlendOption.SourceAlpha,
+                DestinationBlend = BlendOption.InverseSourceAlpha,
+                BlendOperation = BlendOperation.Add,
+                SourceAlphaBlend = BlendOption.SourceAlpha,
+                DestinationAlphaBlend = BlendOption.DestinationAlpha,
+                AlphaBlendOperation = BlendOperation.Maximum,
+                RenderTargetWriteMask = ColorWriteMaskFlags.All,
+            };
+            var blendState = new BlendState(Device, blendStateDescription);
+            Context.OutputMerger.BlendState = blendState;
+            blendState.Dispose();
+
             state.Dispose();
         }
 

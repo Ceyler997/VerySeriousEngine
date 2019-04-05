@@ -82,5 +82,7 @@ PS_IN VSMain(VS_IN input)
 
 float4 PSMain(PS_IN input) : SV_TARGET
 {
-    return diffuse.Sample(textureSampler, input.texcoord) * (SourceIntensity(input) + ambientRefl);
+    float4 result = diffuse.Sample(textureSampler, input.texcoord);
+    result.xyz = result.xyz * (SourceIntensity(input) + ambientRefl);
+    return result;
 }
