@@ -99,7 +99,7 @@ namespace VerySeriousEngine.Core
                     lightSources[i + 1].X = pointLights[i].WorldOwner.WorldLocation.X;
                     lightSources[i + 1].Y = pointLights[i].WorldOwner.WorldLocation.Y;
                     lightSources[i + 1].Z = pointLights[i].WorldOwner.WorldLocation.Z;
-                    lightSources[i + 1].W = directionalLight.Intensity;
+                    lightSources[i + 1].W = pointLights[i].Intensity;
                 }
                 else
                     lightSources[i + 1] = Vector4.Zero;

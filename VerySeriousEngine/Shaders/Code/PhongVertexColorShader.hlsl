@@ -40,7 +40,7 @@ struct PS_IN
     float4 color : COLOR;
 };
 
-float GetDirectionalSourceIntensity(float3 sourceDirection, float lightIntensity, float3 pointLocation, float3 pointLocalNormal)
+float2 GetDirectionalSourceIntensity(float3 sourceDirection, float lightIntensity, float3 pointLocation, float3 pointLocalNormal)
 {
     float4 normalVector = float4(pointLocalNormal.xyz, 0.0f);
     normalVector = mul(normalVector, worldTransform);
@@ -48,16 +48,18 @@ float GetDirectionalSourceIntensity(float3 sourceDirection, float lightIntensity
     
     float3 reflectionDirection = reflect(sourceDirection, pointNormal);
     
-    float3 cameraDirection = normalize(cameraLocation.xyz - pointLocation);
-    
+    float4 worldPoint = float4(pointLocation, 1.0f);
+    worldPoint = mul(worldPoint, worldTransform);
+    float3 cameraDirection = normalize(cameraLocation.xyz - worldPoint.xyz);
+
     float diffuse = lightIntensity * diffuseRefl * dot(sourceDirection * -1, pointNormal); // -1 because it should be direction to the source
     diffuse = max(0, diffuse);
     float specular = lightIntensity * specularRefl * pow(max(0, dot(reflectionDirection, cameraDirection)), shininess);
     specular = max(0, specular);
-    return specular + diffuse;
+    return float2(diffuse, specular);
 }
 
-float SourceIntensity(PS_IN meshPoint)
+float2 SourceIntensity(PS_IN meshPoint)
 {
     return GetDirectionalSourceIntensity(directionalLight.xyz, directionalLight.w, meshPoint.localPosition.xyz, meshPoint.normal);
 }
@@ -78,5 +80,8 @@ PS_IN VSMain(VS_IN input)
 
 float4 PSMain(PS_IN input) : SV_TARGET
 {
-    return float4(input.color.xyz * (SourceIntensity(input) + ambientRefl), input.color.w);
+    float4 result = input.color;
+    float2 intensity = SourceIntensity(input);
+    result.xyz = result.xyz * (intensity.x + ambientRefl) + intensity.y;
+    return result;
 }
