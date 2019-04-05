@@ -61,7 +61,16 @@ float2 GetDirectionalSourceIntensity(float3 sourceDirection, float lightIntensit
 
 float2 SourceIntensity(PS_IN meshPoint)
 {
-    return GetDirectionalSourceIntensity(directionalLight.xyz, directionalLight.w, meshPoint.localPosition.xyz, meshPoint.normal);
+    float2 directionalLightIntensity = GetDirectionalSourceIntensity(directionalLight.xyz, directionalLight.w, meshPoint.localPosition, meshPoint.normal);
+    float2 pointLightIntensity = 0.0f;
+    for (int i = 0; i < 8; ++i)
+    {
+        float4 worldPoint = float4(meshPoint.localPosition.xyz, 1.0f);
+        worldPoint = mul(worldPoint, worldTransform);
+        float3 direction = normalize(worldPoint.xyz - pointLights[i].xyz);
+        pointLightIntensity += GetDirectionalSourceIntensity(direction, pointLights[i].w, meshPoint.localPosition, meshPoint.normal);
+    }
+    return pointLightIntensity + directionalLightIntensity;
 }
 
 PS_IN VSMain(VS_IN input)
