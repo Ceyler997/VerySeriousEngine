@@ -28,9 +28,7 @@ namespace TestProject
             SetupInput(solarSystemGame.InputManager);
 
             var center = new WorldObject(objectName: "System center")
-            {
-                WorldLocation = Vector3.Up * 400,
-            };
+            { WorldLocation = Vector3.Up * 400 };
 
             var CameraLocation = new Vector3(0, 1000, 2000);
             var camera = new SimpleControllableCamera(objectName: "Camera")
@@ -52,53 +50,60 @@ namespace TestProject
                 {
                     AmbientReflection = .23125f,
                     DiffuseReflection = 0.2775f,
-                    SpecularReflection = .773911f,
-                    Shininess = 89.6f,
+                    SpecularReflection = .1f,
+                    Shininess = 6.0f,
                 },
             };
 
-            var directionalLight = new DirectionalLightComponent(center)
-            {
-                Direction = Vector3.Normalize(Vector3.Down + Vector3.Right),
-                Intensity = 5,
-            };
             var sun = new Planet(0, planet, center, "Sun")
             {
                 PlanetSize = 100,
                 RotationAngularSpeed = 0.0f,
                 TurningAngularSpeed = 1.0f,
             };
-            var sunPointLight = new PointLightComponent(sun);
             var mercury = new Planet(400, planet, center, "Mercury")
             {
-                PlanetSize = 3,
+                PlanetSize = 9,
                 RotationAngularSpeed = 5.0f,
                 TurningAngularSpeed = 2.0f,
             };
             var venus = new Planet(700, planet, center, "Venus")
             {
-                PlanetSize = 9,
+                PlanetSize = 27,
                 RotationAngularSpeed = 3.0f,
                 TurningAngularSpeed = -1.0f,
             };
             var earth = new Planet(1000, planet, center, "Earth")
             {
-                PlanetSize = 10,
+                PlanetSize = 30,
                 RotationAngularSpeed = 1.0f,
                 TurningAngularSpeed = 1.0f,
             };
-            var moon = new Planet(10, planet, earth.PlanetCenter, "Moon")
+            var moon = new Planet(6, planet, earth.PlanetCenter, "Moon")
             {
-                PlanetSize = 2,
+                PlanetSize = 6,
                 RotationAngularSpeed = 2.0f,
                 TurningAngularSpeed = 1.0f,
             };
-            var moonPointLight = new PointLightComponent(moon);
             var mars = new Planet(1500, planet, center, "Mars")
             {
-                PlanetSize = 5f,
+                PlanetSize = 15,
                 RotationAngularSpeed = 1.0f,
                 TurningAngularSpeed = 0.8f,
+            };
+
+            var directionalLight = new DirectionalLightComponent(center)
+            {
+                Direction = Vector3.Normalize(Vector3.Down + Vector3.Right),
+                Intensity = 3,
+            };
+            var moonPointLight = new PointLightComponent(moon.PlanetCenter)
+            {
+                Intensity = 2
+            };
+            var sunPointLight = new PointLightComponent(sun)
+            {
+                Intensity = 10,
             };
 
             solarSystemGame.GameRenderer.LightingModel.AddDirectionalLight(directionalLight);
@@ -106,6 +111,7 @@ namespace TestProject
             solarSystemGame.GameRenderer.LightingModel.AddPointLight(moonPointLight);
             solarSystemGame.StartGame();
             solarSystemGame.Dispose();
+
             Console.WriteLine();
             Console.WriteLine("Game finished. Press Enter.");
             Console.ReadLine();
