@@ -5,6 +5,7 @@ using VerySeriousEngine.Components;
 using VerySeriousEngine.Core;
 using VerySeriousEngine.Input;
 using VerySeriousEngine.Objects;
+using VerySeriousEngine.Shaders;
 using VerySeriousEngine.Utils;
 using VerySeriousEngine.Utils.Import;
 
@@ -21,6 +22,7 @@ namespace TestProject
 
             var testModel = MeshImporter.ImportModelFromFile("Models/Earth/Earth.obj");
             var planet = testModel[0];
+            var tableMesh = MeshImporter.ImportModelFromFile("Models/Table/table.obj")[0];
 
             var texture = TextureImporter.ImportTextureFromFile("Models/Earth/Textures/Diffuse_2K.png");
 
@@ -28,6 +30,7 @@ namespace TestProject
 
             SetupInput(solarSystemGame.InputManager);
 
+            var CameraLocation = new Vector3(200, 1500, 2000);
             var camera = new SimpleControllableCamera(objectName: "Camera")
             {
                 ForwardAxis = "Forward",
@@ -35,11 +38,28 @@ namespace TestProject
                 UpAxis = "Up",
                 TurnRightAxis = "Turn Right",
                 TurnUpAxis = "Turn Up",
-                WorldLocation = new Vector3(200, 1000, 2000),
-                WorldRotation = Quaternion.Invert(Quaternion.LookAtRH(new Vector3(200, 1000, 2000), Vector3.Zero, Vector3.Up)),
+                WorldLocation = CameraLocation,
+                WorldRotation = Quaternion.Invert(Quaternion.LookAtRH(CameraLocation, Vector3.Zero, Vector3.Up)),
             };
 
-            var center = new WorldObject();
+            var center = new WorldObject(objectName: "System center")
+            {
+                WorldLocation = Vector3.Up * 400,
+            };
+
+            var table = new WorldObject(objectName: "Table mesh");
+            var tableComponent = new StaticMeshComponent(table)
+            {
+                Mesh = tableMesh,
+                DefaultShader = new PhongVertexColorShader()
+                {
+                    AmbientReflection = .23125f,
+                    DiffuseReflection = 0.2775f,
+                    SpecularReflection = .773911f,
+                    Shininess = 89.6f,
+                },
+            };
+
             var directionalLight = new DirectionalLightComponent(center)
             {
                 Direction = Vector3.Normalize(Vector3.Down + Vector3.Right),
