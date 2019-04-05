@@ -147,4 +147,84 @@ namespace VerySeriousEngine.Shaders
             Game.GameInstance.GameRenderer.Context.UpdateSubresource(constants, parametersBuffer);
         }
     }
+
+    public class PhongVertexColorShader : Shader
+    {
+        private Buffer parametersBuffer;
+        private Buffer cameraLocationBuffer;
+
+        private readonly float[] constants;
+
+        public float SpecularReflection {
+            get => constants[0];
+            set {
+                if (constants[0] == value)
+                    return;
+
+                constants[0] = value;
+                UpdateConstantBuffer();
+            }
+        }
+        public float DiffuseReflection {
+            get => constants[1];
+            set {
+                if (constants[1] == value)
+                    return;
+
+                constants[1] = value;
+                UpdateConstantBuffer();
+            }
+        }
+        public float AmbientReflection {
+            get => constants[2];
+            set {
+                if (constants[2] == value)
+                    return;
+
+                constants[2] = value;
+                UpdateConstantBuffer();
+            }
+        }
+        public float Shininess {
+            get => constants[3];
+            set {
+                if (constants[3] == value)
+                    return;
+
+                constants[3] = value;
+                UpdateConstantBuffer();
+            }
+        }
+
+        public PhongVertexColorShader() : base("Shaders/Code/PhongVertexColorShader.hlsl", Vertex.InputElements, "VSMain", "PSMain")
+        {
+            constants = new float[4] { .5f, .5f, .5f, .5f };
+
+            parametersBuffer = Game.GameInstance.GameConstructor.CreateBuffer(constants, BindFlags.ConstantBuffer);
+            cameraLocationBuffer = Game.GameInstance.GameConstructor.CreateEmptyBuffer(Vector4.SizeInBytes, BindFlags.ConstantBuffer);
+        }
+
+        public override void Dispose()
+        {
+            parametersBuffer.Dispose();
+            cameraLocationBuffer.Dispose();
+            base.Dispose();
+        }
+
+        public override void PrepareResources(Renderer renderer)
+        {
+            var cameraMatrix = Game.GameInstance.CurrentWorld.WorldPointOfView.ViewMatrix;
+            cameraMatrix.Invert();
+            Vector4 cameraLocation = new Vector4(cameraMatrix.TranslationVector, 1);
+            Game.GameInstance.GameRenderer.Context.UpdateSubresource(ref cameraLocation, cameraLocationBuffer);
+            
+            renderer.Context.PixelShader.SetConstantBuffer(2, parametersBuffer);
+            renderer.Context.PixelShader.SetConstantBuffer(3, cameraLocationBuffer);
+        }
+
+        private void UpdateConstantBuffer()
+        {
+            Game.GameInstance.GameRenderer.Context.UpdateSubresource(constants, parametersBuffer);
+        }
+    }
 }

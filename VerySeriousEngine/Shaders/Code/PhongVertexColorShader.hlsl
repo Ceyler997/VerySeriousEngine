@@ -24,9 +24,6 @@ cbuffer PSB_Camera : register(b3)
     float4 cameraLocation;
 }
 
-Texture2D diffuse : register(ps, t0);
-SamplerState textureSampler : register(ps, s0);
-
 struct VS_IN
 {
     float3 position : POSITION;
@@ -40,12 +37,11 @@ struct PS_IN
     float4 position : SV_POSITION;
     float3 localPosition : LOCPOSITION;
     float3 normal : NORMAL;
-    float2 texcoord : TEXCOORD;
+    float4 color : COLOR;
 };
 
 float GetDirectionalSourceIntensity(float3 sourceDirection, float lightIntensity, float3 pointLocation, float3 pointLocalNormal)
 {
-
     float4 normalVector = float4(pointLocalNormal.xyz, 0.0f);
     normalVector = mul(normalVector, worldTransform);
     float3 pointNormal = normalize(normalVector.xyz);
@@ -75,12 +71,12 @@ PS_IN VSMain(VS_IN input)
     output.position = mul(position, worldViewProj);
     output.localPosition = input.position;
     output.normal = input.normal;
-    output.texcoord = input.texcoord;
+    output.color = input.color;
 
     return output;
 }
 
 float4 PSMain(PS_IN input) : SV_TARGET
 {
-    return diffuse.Sample(textureSampler, input.texcoord) * (SourceIntensity(input) + ambientRefl);
+    return input.color * (SourceIntensity(input) + ambientRefl);
 }
