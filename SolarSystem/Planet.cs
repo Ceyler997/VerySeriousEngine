@@ -24,8 +24,7 @@ namespace TestProject
                 planetMesh = new StaticMeshComponent(this)
                 {
                     Mesh = mesh,
-                    //DefaultShader = new TextureShader("Models/Earth/Textures/Diffuse_2K.png")
-                    DefaultShader = new PhongShader("Models/Earth/Textures/Diffuse_2K.png")
+                    DefaultShader = new PhongShader("Models/Earth/Textures/Diffuse_2K_transparent.png")
                     {
                         AmbientReflection = .23125f,
                         DiffuseReflection = 0.2775f,

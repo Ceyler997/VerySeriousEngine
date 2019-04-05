@@ -7,7 +7,6 @@ using VerySeriousEngine.Input;
 using VerySeriousEngine.Objects;
 using VerySeriousEngine.Shaders;
 using VerySeriousEngine.Utils;
-using VerySeriousEngine.Utils.Import;
 
 namespace TestProject
 {
@@ -24,13 +23,16 @@ namespace TestProject
             var planet = testModel[0];
             var tableMesh = MeshImporter.ImportModelFromFile("Models/Table/table.obj")[0];
 
-            var texture = TextureImporter.ImportTextureFromFile("Models/Earth/Textures/Diffuse_2K.png");
-
             solarSystemGame.CurrentWorld = new World("Solar System");
 
             SetupInput(solarSystemGame.InputManager);
 
-            var CameraLocation = new Vector3(200, 1500, 2000);
+            var center = new WorldObject(objectName: "System center")
+            {
+                WorldLocation = Vector3.Up * 400,
+            };
+
+            var CameraLocation = new Vector3(0, 1000, 2000);
             var camera = new SimpleControllableCamera(objectName: "Camera")
             {
                 ForwardAxis = "Forward",
@@ -39,12 +41,7 @@ namespace TestProject
                 TurnRightAxis = "Turn Right",
                 TurnUpAxis = "Turn Up",
                 WorldLocation = CameraLocation,
-                WorldRotation = Quaternion.Invert(Quaternion.LookAtRH(CameraLocation, Vector3.Zero, Vector3.Up)),
-            };
-
-            var center = new WorldObject(objectName: "System center")
-            {
-                WorldLocation = Vector3.Up * 400,
+                WorldRotation = Quaternion.Invert(Quaternion.LookAtRH(CameraLocation, center.WorldLocation, Vector3.Up)),
             };
 
             var table = new WorldObject(objectName: "Table mesh");
@@ -63,7 +60,7 @@ namespace TestProject
             var directionalLight = new DirectionalLightComponent(center)
             {
                 Direction = Vector3.Normalize(Vector3.Down + Vector3.Right),
-                Intensity = 10,
+                Intensity = 5,
             };
             var sun = new Planet(0, planet, center, "Sun")
             {
