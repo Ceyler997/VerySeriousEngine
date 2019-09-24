@@ -11,7 +11,7 @@ namespace VerySeriousEngine.Utils.Import
 {
     public class TextureImporter
     {
-        public static ShaderResourceView ImportTextureFromFile(string filePath)
+        public static ShaderResourceView ImportTextureFromFile(string filePath, bool applyGammaCorrection)
         {
             if (filePath == null)
                 throw new ArgumentNullException(nameof(filePath));
@@ -25,7 +25,7 @@ namespace VerySeriousEngine.Utils.Import
                 case PixelFormat.Canonical:
                 case PixelFormat.Format32bppArgb:
                 case PixelFormat.Format24bppRgb:
-                    descFormat = Format.B8G8R8A8_UNorm;
+                    descFormat = applyGammaCorrection ? Format.B8G8R8A8_UNorm_SRgb : Format.B8G8R8A8_UNorm;
                     break;
                 default:
                     throw new ArgumentException("Unknown pixel format " + bitmap.PixelFormat);

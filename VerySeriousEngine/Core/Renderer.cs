@@ -36,7 +36,7 @@ namespace VerySeriousEngine.Core
             var swapChainDesc = new SwapChainDescription()
             {
                 BufferCount = 1,
-                ModeDescription = new ModeDescription(FrameWidth, FrameHeight, new Rational(60, 1), Format.R8G8B8A8_UNorm),
+                ModeDescription = new ModeDescription(FrameWidth, FrameHeight, new Rational(60, 1), Format.R8G8B8A8_UNorm_SRgb),
                 IsWindowed = isWindowed,
                 OutputHandle = form.Handle,
                 SampleDescription = new SampleDescription(1, 0),
