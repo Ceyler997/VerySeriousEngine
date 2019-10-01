@@ -51,7 +51,7 @@ namespace VerySeriousEngine.Shaders
 
         public TextureShader(string texturePath) : base("Shaders/Code/TextureShader.hlsl", Vertex.InputElements)
         {
-            textureResource = TextureImporter.ImportTextureFromFile(texturePath, true);
+            textureResource = TextureImporter.ImportTextureFromFile(texturePath);
         }
 
         public override void Dispose()
@@ -121,7 +121,7 @@ namespace VerySeriousEngine.Shaders
 
             parametersBuffer = Game.GameInstance.GameConstructor.CreateBuffer(constants, BindFlags.ConstantBuffer);
             cameraLocationBuffer = Game.GameInstance.GameConstructor.CreateEmptyBuffer(Vector4.SizeInBytes, BindFlags.ConstantBuffer);
-            textureResource = TextureImporter.ImportTextureFromFile(texturePath, true);
+            textureResource = TextureImporter.ImportTextureFromFile(texturePath);
         }
 
         public override void Dispose()

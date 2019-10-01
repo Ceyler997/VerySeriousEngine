@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using VerySeriousEngine.Core;
-using VerySeriousEngine.Utils;
 
 namespace VerySeriousEngine.Geometry
 {

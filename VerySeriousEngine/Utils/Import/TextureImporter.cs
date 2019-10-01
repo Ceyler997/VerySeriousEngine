@@ -11,16 +11,15 @@ namespace VerySeriousEngine.Utils.Import
 {
     public class TextureImporter
     {
-        public static ShaderResourceView ImportTextureFromFile(string filePath, bool applyGammaCorrection)
+        public static ShaderResourceView ImportTextureFromFile(string filePath, bool applyGammaCorrection = true)
         {
             if (filePath == null)
                 throw new ArgumentNullException(nameof(filePath));
 
             var device = Game.GameInstance.GameRenderer.Device;
             var bitmap = new Bitmap(filePath);
-            var descFormat = Format.Unknown;
-
-            switch(bitmap.PixelFormat)
+            Format descFormat;
+            switch (bitmap.PixelFormat)
             {
                 case PixelFormat.Canonical:
                 case PixelFormat.Format32bppArgb:
