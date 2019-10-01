@@ -5,10 +5,11 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using SharpDX.Windows;
 using VerySeriousEngine.Interfaces;
+using VerySeriousEngine.Shaders;
+using VerySeriousEngine.Utils;
 
 using Device = SharpDX.Direct3D11.Device;
 using Buffer = SharpDX.Direct3D11.Buffer;
-using VerySeriousEngine.Utils;
 
 namespace VerySeriousEngine.Core
 {
@@ -18,6 +19,13 @@ namespace VerySeriousEngine.Core
         private readonly Device device;
         private readonly SwapChain swapChain;
         private RenderTargetView renderView;
+        
+        private RenderTargetView colorView = null;
+        private ShaderResourceView colorShaderResourceView = null;
+
+        private RenderTargetView normalView = null;
+        private ShaderResourceView normalShaderResourceView = null;
+
         private DepthStencilView depthView;
         private Buffer worldTransformMatrixBuffer;
 
@@ -25,6 +33,8 @@ namespace VerySeriousEngine.Core
         public DeviceContext Context { get => Device.ImmediateContext; }
 
         public LightingModel LightingModel { get; set; }
+        
+        private DefferedShader defferedShader;
 
         public int FrameWidth { get => form.Width; }
         public int FrameHeight { get => form.Height; }
@@ -53,12 +63,13 @@ namespace VerySeriousEngine.Core
             SetupVertexShader();
             SetupRasterizer();
             SetupPixelShader();
-            SetupOutputMerger();            
+            SetupOutputMerger();
+            defferedShader = new DefferedShader(constructor);
         }
 
-        private void SetupInputAssembler()
+        private void SetupInputAssembler(PrimitiveTopology primitiveTopology = PrimitiveTopology.TriangleList)
         {
-            Context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+            Context.InputAssembler.PrimitiveTopology = primitiveTopology;
         }
 
         private void SetupVertexShader()
@@ -66,10 +77,10 @@ namespace VerySeriousEngine.Core
             Context.VertexShader.SetConstantBuffer(0, worldTransformMatrixBuffer);
         }
 
-        private void SetupRasterizer()
+        private void SetupRasterizer(CullMode cullMode = CullMode.Front)
         {
             var description = RasterizerStateDescription.Default();
-            description.CullMode = CullMode.Front;
+            description.CullMode = cullMode;
             var state = new RasterizerState(Device, description);
 
             Context.Rasterizer.State = state;
@@ -116,6 +127,24 @@ namespace VerySeriousEngine.Core
             description.DepthComparison = Comparison.LessEqual;
             var state = new DepthStencilState(Device, description);
 
+            var textureDescription = new Texture2DDescription {
+                Format = Format.R16G16B16A16_UNorm,
+                ArraySize = 1,
+                MipLevels = 1,
+                Width = FrameWidth,
+                Height = FrameHeight,
+                SampleDescription = swapChain.Description.SampleDescription,
+                BindFlags = BindFlags.RenderTarget | BindFlags.ShaderResource
+            };
+            
+            Texture2D texture = new Texture2D(device, textureDescription);
+            colorView = new RenderTargetView(device, texture);
+            colorShaderResourceView = new ShaderResourceView(device, texture);
+            
+            texture = new Texture2D(device, textureDescription);
+            normalView = new RenderTargetView(device, texture);
+            normalShaderResourceView = new ShaderResourceView(device, texture);
+
             Context.OutputMerger.SetDepthStencilState(state);
             Context.OutputMerger.SetTargets(depthView, renderView);
 
@@ -141,9 +170,13 @@ namespace VerySeriousEngine.Core
         public void StartFrame()
         {
             Context.ClearRenderTargetView(renderView, Color.Black);
+            Context.ClearRenderTargetView(colorView, Color.Black);
+            Context.ClearRenderTargetView(normalView, Color.Black);
             Context.ClearDepthStencilView(depthView, DepthStencilClearFlags.Depth, 1.0f, 0);
             if (LightingModel != null)
                 LightingModel.UpdateBuffers(this);
+
+            Context.OutputMerger.SetRenderTargets(depthView, new RenderTargetView[] { colorView, normalView });
         }
 
         public void RenderObject(IRenderable renderable, ref Matrix WorldMatrix, ref Matrix ViewMatrix, ref Matrix ProjectionMatrix)
@@ -185,14 +218,32 @@ namespace VerySeriousEngine.Core
                 Context.InputAssembler.SetIndexBuffer(piece.BufferSetup.IndexBuffer, Format.R32_UInt, 0);
                 Context.InputAssembler.SetVertexBuffers(0, piece.BufferSetup.VertexBufferBinding);
 
-
                 Context.DrawIndexed(piece.BufferSetup.IndexCount, 0, 0);
             }
         }
 
         public void FinishFrame()
         {
+            SetupInputAssembler(PrimitiveTopology.TriangleStrip);
+            SetupRasterizer(CullMode.Back);
+
+            Context.OutputMerger.SetRenderTargets(renderView);
+            Context.VertexShader.Set(defferedShader.VertexShader);
+            Context.PixelShader.Set(defferedShader.PixelShader);
+
+            Context.PixelShader.SetShaderResources(0, 
+                new ShaderResourceView[] {
+                    colorShaderResourceView,
+                    normalShaderResourceView,
+                }
+            );
+
+            Context.Draw(4, 0);
+
             swapChain.Present(1, PresentFlags.None);
+
+            SetupInputAssembler();
+            SetupRasterizer();
         }
 
         public void Dispose()
@@ -200,6 +251,7 @@ namespace VerySeriousEngine.Core
             if (LightingModel != null)
                 LightingModel.Dispose();
             worldTransformMatrixBuffer.Dispose();
+            defferedShader.Dispose();
             renderView.Dispose();
             depthView.Dispose();
             swapChain.Dispose();

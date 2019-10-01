@@ -15,9 +15,11 @@ namespace VerySeriousEngine.Shaders
         public VertexShader VertexShader { get; private set; }
         public PixelShader PixelShader { get; private set; }
 
-        public Shader(string shaderFileName, InputElement[] inputElements, string vertexShaderEntryPoint, string pixelShaderEntryPoint)
+        public Shader(string shaderFileName, InputElement[] inputElements, string vertexShaderEntryPoint = "VSMain", string pixelShaderEntryPoint = "PSMain", Constructor constructor = null)
         {
-            var constructor = Game.GameInstance.GameConstructor;
+            if(constructor == null)
+                constructor = Game.GameInstance.GameConstructor;
+
             var vertexShaderCompileResult = constructor.CompileVertexShader(shaderFileName, vertexShaderEntryPoint, inputElements);
             VertexShader = vertexShaderCompileResult.Item1;
             InputLayout = vertexShaderCompileResult.Item2;
@@ -36,7 +38,7 @@ namespace VerySeriousEngine.Shaders
 
     public class VertexColorShader : Shader
     {
-        public VertexColorShader() : base("Shaders/Code/VertexColorShader.hlsl", Vertex.InputElements, "VSMain", "PSMain")
+        public VertexColorShader() : base("Shaders/Code/VertexColorShader.hlsl", Vertex.InputElements)
         { }
 
         public override void PrepareResources(Renderer renderer)
@@ -47,7 +49,7 @@ namespace VerySeriousEngine.Shaders
     {
         private readonly ShaderResourceView textureResource;
 
-        public TextureShader(string texturePath) : base("Shaders/Code/TextureShader.hlsl", Vertex.InputElements, "VSMain", "PSMain")
+        public TextureShader(string texturePath) : base("Shaders/Code/TextureShader.hlsl", Vertex.InputElements)
         {
             textureResource = TextureImporter.ImportTextureFromFile(texturePath, true);
         }
@@ -113,7 +115,7 @@ namespace VerySeriousEngine.Shaders
             }
         }
 
-        public PhongShader(string texturePath) : base("Shaders/Code/PhongTextureShader.hlsl", Vertex.InputElements, "VSMain", "PSMain")
+        public PhongShader(string texturePath) : base("Shaders/Code/PhongTextureShader.hlsl", Vertex.InputElements)
         {
             constants = new float[4] { .5f, .5f, .5f, .5f };
 
@@ -196,7 +198,7 @@ namespace VerySeriousEngine.Shaders
             }
         }
 
-        public PhongVertexColorShader() : base("Shaders/Code/PhongVertexColorShader.hlsl", Vertex.InputElements, "VSMain", "PSMain")
+        public PhongVertexColorShader() : base("Shaders/Code/PhongVertexColorShader.hlsl", Vertex.InputElements)
         {
             constants = new float[4] { .5f, .5f, .5f, .5f };
 
@@ -225,6 +227,19 @@ namespace VerySeriousEngine.Shaders
         private void UpdateConstantBuffer()
         {
             Game.GameInstance.GameRenderer.Context.UpdateSubresource(constants, parametersBuffer);
+        }
+    }
+
+    public class DefferedShader : Shader
+    {
+        public DefferedShader(Constructor constructor = null) : base("Shaders/Code/DefferedShader.hlsl", Vertex.InputElements, "VSMain", "PSMain", constructor)
+        {
+
+        }
+
+        public override void PrepareResources(Renderer renderer)
+        {
+
         }
     }
 }
